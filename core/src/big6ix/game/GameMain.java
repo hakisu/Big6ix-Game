@@ -4,11 +4,22 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.*;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.Array;
+
+import java.util.Iterator;
 
 public class GameMain extends ApplicationAdapter {
-    private Texture img;
     private Texture playerImage;
+    private Sprite playerSprite;
+    private Texture enemyImage;
+    private Sprite enemySprite;
+    private Array<Bullet> bullets;
+    private Iterator<Bullet> bulletsIterator;
+
+
     private SpriteBatch batch;
     private OrthographicCamera camera;
 
@@ -20,19 +31,28 @@ public class GameMain extends ApplicationAdapter {
     private long frameTime = 1000000000 / ticksPerSecond;
 
     // temp fields
-    private float posX = 20;
-    private float posY = 100;
-    private float speed = 0.1f;
+    private float posX = 0;
+    private float posY = 0;
+    private float speed = 2.5f;
 
     @Override
     public void create() {
         batch = new SpriteBatch();
+
         playerImage = new Texture("player.png");
+        playerSprite = new Sprite(playerImage);
+        playerSprite.flip(false, true);
+        enemyImage = new Texture("enemy.png");
+        enemySprite = new Sprite(enemyImage);
+        enemySprite.flip(false, true);
+
         camera = new OrthographicCamera();
         camera.setToOrtho(true, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
         Cursor gameCursor = Gdx.graphics.newCursor(new Pixmap(Gdx.files.internal("crosshair.png")), 16, 16);
         Gdx.graphics.setCursor(gameCursor);
+
+        bullets = new Array<Bullet>();
 
         oldTime = System.nanoTime();
     }
@@ -44,13 +64,12 @@ public class GameMain extends ApplicationAdapter {
         oldTime = newTime;
         timeAccumulator += timeDifference;
 
-        if (timeAccumulator >= 1000000000) {
-            System.out.println(timeDifference / 1000000.0);
-            timeAccumulator = 0;
+        if (timeAccumulator >= frameTime) {
+            timeAccumulator -= frameTime;
+            handleInput();
+            updatePhysics();
         }
 
-        handleInput();
-        updatePhysics();
         updateGraphics(timeDifference);
     }
 
@@ -72,12 +91,20 @@ public class GameMain extends ApplicationAdapter {
         batch.setProjectionMatrix(camera.combined);
 
         batch.begin();
-        batch.draw(playerImage, posX, posY);
-        batch.draw(playerImage, 200, 100);
+        batch.draw(playerSprite, posX, posY);
+        batch.draw(enemySprite, 200, 100);
+        for (Bullet bullet : bullets) {
+            batch.draw(bullet.sprite, bullet.getX() - 16, bullet.getY() - 16, 32, 32);
+        }
         batch.end();
     }
 
     private void updatePhysics() {
+        bulletsIterator = bullets.iterator();
+        while (bulletsIterator.hasNext()) {
+            Bullet bullet = bulletsIterator.next();
+            bullet.update();
+        }
     }
 
     private void handleInput() {
@@ -95,11 +122,18 @@ public class GameMain extends ApplicationAdapter {
             posX -= speed;
         }
         if (Gdx.input.isTouched()) {
-            System.out.println(Gdx.input.getX() + "  " + Gdx.input.getY());
+            Vector3 mousePositionInGameWorld = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
+            camera.unproject(mousePositionInGameWorld);
+
+            Bullet bullet = new Bullet(posX + 32, posY + 32, mousePositionInGameWorld.x, mousePositionInGameWorld.y);
+            bullets.add(bullet);
         }
         // exit command
-        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+        if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
             Gdx.app.exit();
+        }
+        if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
+            System.out.println(bullets.size);
         }
     }
 }
