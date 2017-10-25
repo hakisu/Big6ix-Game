@@ -15,7 +15,7 @@ public class DesktopLauncher {
         config.fullscreen = true;
         config.foregroundFPS = 0;
         config.backgroundFPS = 0;
-        config.vSyncEnabled = false;
+        config.vSyncEnabled = true;
         config.forceExit = true;
 
         new LwjglApplication(new GameMain(), config);

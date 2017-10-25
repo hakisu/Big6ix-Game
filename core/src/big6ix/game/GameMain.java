@@ -18,8 +18,10 @@ public class GameMain extends ApplicationAdapter {
     private Sprite enemySprite;
     private Array<Bullet> bullets;
     private Iterator<Bullet> bulletsIterator;
+    private Texture wallTexture;
+    private Texture floorTexture;
 
-
+    private Map map;
     private SpriteBatch batch;
     private OrthographicCamera camera;
 
@@ -31,32 +33,38 @@ public class GameMain extends ApplicationAdapter {
     private long frameTime = 1000000000 / ticksPerSecond;
 
     // temp fields
-    private float posX = 0;
-    private float posY = 0;
-    private float speed = 2.5f;
+    private float posX = 900;
+    private float posY = 500;
+    private float speed = 5f;
 
     @Override
     public void create() {
-        batch = new SpriteBatch();
+        Cursor gameCursor = Gdx.graphics.newCursor(new Pixmap(Gdx.files.internal("crosshair.png")), 16, 16);
+        Gdx.graphics.setCursor(gameCursor);
 
+        batch = new SpriteBatch();
         playerImage = new Texture("player.png");
         playerSprite = new Sprite(playerImage);
         playerSprite.flip(false, true);
         enemyImage = new Texture("enemy.png");
         enemySprite = new Sprite(enemyImage);
         enemySprite.flip(false, true);
+        wallTexture = new Texture("wall.png");
+        floorTexture = new Texture("floor.png");
 
         camera = new OrthographicCamera();
         camera.setToOrtho(true, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
-        Cursor gameCursor = Gdx.graphics.newCursor(new Pixmap(Gdx.files.internal("crosshair.png")), 16, 16);
-        Gdx.graphics.setCursor(gameCursor);
 
         bullets = new Array<Bullet>();
 
         oldTime = System.nanoTime();
+
+        // temp
+        map = new Map(3, 3);
     }
 
+    // Main game loop for physics, input and graphics updates
     @Override
     public void render() {
         long newTime = System.nanoTime();
@@ -91,6 +99,16 @@ public class GameMain extends ApplicationAdapter {
         batch.setProjectionMatrix(camera.combined);
 
         batch.begin();
+        // test
+        for (int i = 0; i < 30; ++i) {
+            for (int j = 0; j < 30; ++j) {
+                if (map.getMap()[i][j] == 0) {
+                    batch.draw(floorTexture, i * 64, j * 64);
+                } else if (map.getMap()[i][j] == 1) {
+                    batch.draw(wallTexture, i * 64, j * 64);
+                }
+            }
+        }
         batch.draw(playerSprite, posX, posY);
         batch.draw(enemySprite, 200, 100);
         for (Bullet bullet : bullets) {
@@ -104,22 +122,33 @@ public class GameMain extends ApplicationAdapter {
         while (bulletsIterator.hasNext()) {
             Bullet bullet = bulletsIterator.next();
             bullet.update();
+            if (map.getMap()[(int) bullet.getX() / 64][(int) bullet.getY() / 64] == 1) {
+                bulletsIterator.remove();
+            }
         }
     }
 
     private void handleInput() {
         // movement commands
         if (Gdx.input.isKeyPressed(Input.Keys.W)) {
-            posY -= speed;
+            if (map.getMap()[(int) posX / 64][(int) (posY - speed) / 64] != 1) {
+                posY -= speed;
+            }
         }
         if (Gdx.input.isKeyPressed(Input.Keys.S)) {
-            posY += speed;
+            if (map.getMap()[(int) posX / 64][(int) (posY + speed + 64) / 64] != 1) {
+                posY += speed;
+            }
         }
         if (Gdx.input.isKeyPressed(Input.Keys.D)) {
-            posX += speed;
+            if (map.getMap()[(int) (posX + speed + 64) / 64][(int) posY / 64] != 1) {
+                posX += speed;
+            }
         }
         if (Gdx.input.isKeyPressed(Input.Keys.A)) {
-            posX -= speed;
+            if (map.getMap()[(int) (posX - speed) / 64][(int) posY / 64] != 1) {
+                posX -= speed;
+            }
         }
         if (Gdx.input.isTouched()) {
             Vector3 mousePositionInGameWorld = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
