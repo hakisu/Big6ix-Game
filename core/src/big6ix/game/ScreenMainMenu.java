@@ -24,28 +24,40 @@ public class ScreenMainMenu extends ScreenAdapter {
         camera.setToOrtho(true, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
     }
 
+    // odpala sie kiedy ten ekran staje sie aktywny
     @Override
     public void show() {
-        gameMain.batch.setProjectionMatrix(camera.combined);
+        System.out.println("MainMenu screen set to active.");
     }
 
+    // glowna petla, ktora wykonywana jest caly czas dopoki dany ekran jest aktywny
     @Override
     public void render(float delta) {
+        gameMain.batch.setProjectionMatrix(camera.combined);
+
         Gdx.gl.glClearColor(0.3f, 0.5f, 1, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         gameMain.batch.begin();
 
+        // mozna usunac
         gameMain.font.draw(
                 gameMain.batch, "testujemy pisanie",
                 Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
 
         gameMain.batch.end();
 
-        if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
+        // tymczasowy sposob aby odpalic gre
+        if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
             gameMain.setScreen(gameMain.screenGame);
         }
 
+        // tymczasowe wejscie do ekranu settings
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
+            gameMain.setScreen(gameMain.screenSettings);
+        }
+
+        // wyjscie z gry
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
             Gdx.app.exit();
         }

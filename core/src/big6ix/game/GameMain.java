@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 
@@ -13,14 +14,18 @@ public class GameMain extends Game {
     // Game screens
     ScreenGame screenGame = null;
     ScreenMainMenu screenMainMenu = null;
+    ScreenSettings screenSettings = null;
 
     // Batch and font used for drawing available for different screen objects
     SpriteBatch batch = null;
     BitmapFont font = null;
+    static TextureAtlas gameAtlas = null;
 
     @Override
     public void create() {
-        batch = new SpriteBatch();
+        gameAtlas = new TextureAtlas(Gdx.files.internal("graphics/gameTexturePack.atlas"), true);
+        batch = new SpriteBatch(Constants.BATCH_MAX_NUMBER_OF_SPRITES);
+
         FreeTypeFontGenerator fontGenerator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/OpenSans-Regular.ttf"));
         FreeTypeFontParameter fontParameter = new FreeTypeFontParameter();
         fontParameter.size = 64;
@@ -28,11 +33,13 @@ public class GameMain extends Game {
         font = fontGenerator.generateFont(fontParameter);
         fontGenerator.dispose();
 
-        Cursor gameCursor = Gdx.graphics.newCursor(new Pixmap(Gdx.files.internal("crosshair.png")), 16, 16);
+        Cursor gameCursor = Gdx.graphics.newCursor(new Pixmap(Gdx.files.internal("graphics/crosshair.png")), 16, 16);
         Gdx.graphics.setCursor(gameCursor);
 
+        // Screens initialization
         screenGame = new ScreenGame(this);
         screenMainMenu = new ScreenMainMenu(this);
+        screenSettings = new ScreenSettings(this);
 
         this.setScreen(screenMainMenu);
     }
@@ -61,5 +68,6 @@ public class GameMain extends Game {
         font.dispose();
         screenGame.dispose();
         screenMainMenu.dispose();
+        gameAtlas.dispose();
     }
 }

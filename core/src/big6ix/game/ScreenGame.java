@@ -2,30 +2,23 @@ package big6ix.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.utils.Array;
 
-import java.util.Iterator;
+import static com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 
 public class ScreenGame extends ScreenAdapter {
     private final GameMain gameMain;
 
-    private Texture playerImage;
-    private Sprite playerSprite;
-    private Texture enemyImage;
-    private Sprite enemySprite;
-    private Array<Bullet> bullets;
-    private Iterator<Bullet> bulletsIterator;
-    private Texture wallTexture;
-    private Texture floorTexture;
+    ManagerBullets managerBullets = null;
+
+    private AtlasRegion playerImage;
+    private AtlasRegion enemyImage;
+    private AtlasRegion wallImage;
+    private AtlasRegion floorImage;
+
 
     private Map map;
     private OrthographicCamera camera;
@@ -45,27 +38,30 @@ public class ScreenGame extends ScreenAdapter {
     public ScreenGame(GameMain gameMain) {
         this.gameMain = gameMain;
 
-        playerImage = new Texture("player.png");
-        playerSprite = new Sprite(playerImage);
-        playerSprite.flip(false, true);
-        enemyImage = new Texture("enemy.png");
-        enemySprite = new Sprite(enemyImage);
-        enemySprite.flip(false, true);
-        wallTexture = new Texture("wall.png");
-        floorTexture = new Texture("floor.png");
+        map = new Map(3, 3);
+        managerBullets = new ManagerBullets(this.map);
+
+        playerImage = GameMain.gameAtlas.findRegion(Constants.PLAYER_NAME);
+        if (playerImage == null)
+            System.out.println("player null");
+        enemyImage = GameMain.gameAtlas.findRegion(Constants.ENEMY_NAME);
+        if (enemyImage == null)
+            System.out.println("enemy null");
+        wallImage = GameMain.gameAtlas.findRegion(Constants.WALL_NAME);
+        if (wallImage == null)
+            System.out.println("wall null");
+        floorImage = GameMain.gameAtlas.findRegion(Constants.FLOOR_NAME);
+        if (floorImage == null)
+            System.out.println("floor null");
 
         camera = new OrthographicCamera();
         camera.setToOrtho(true, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-
-        bullets = new Array<Bullet>();
-
-        // temp
-        map = new Map(3, 3);
     }
 
     @Override
     public void show() {
         oldTime = System.nanoTime();
+        System.out.println("Game screen set to active.");
     }
 
     // Main game loop for physics, input and graphics updates
@@ -89,7 +85,7 @@ public class ScreenGame extends ScreenAdapter {
 
     @Override
     public void dispose() {
-        playerImage.dispose();
+
     }
 
     private void updateGraphics(long timeDifference) {
@@ -103,34 +99,26 @@ public class ScreenGame extends ScreenAdapter {
         camera.update();
         gameMain.batch.setProjectionMatrix(camera.combined);
 
+        gameMain.batch.totalRenderCalls = 0;
         gameMain.batch.begin();
         // test
         for (int i = 0; i < 30; ++i) {
             for (int j = 0; j < 30; ++j) {
                 if (map.getMap()[i][j] == 0) {
-                    gameMain.batch.draw(floorTexture, i * 64, j * 64);
+                    gameMain.batch.draw(floorImage, i * 64, j * 64);
                 } else if (map.getMap()[i][j] == 1) {
-                    gameMain.batch.draw(wallTexture, i * 64, j * 64);
+                    gameMain.batch.draw(wallImage, i * 64, j * 64);
                 }
             }
         }
-        gameMain.batch.draw(playerSprite, posX, posY);
-        gameMain.batch.draw(enemySprite, 200, 100);
-        for (Bullet bullet : bullets) {
-            gameMain.batch.draw(bullet.sprite, bullet.getX() - 16, bullet.getY() - 16, 32, 32);
-        }
+        gameMain.batch.draw(playerImage, posX, posY);
+        gameMain.batch.draw(enemyImage, 200, 100);
+        managerBullets.render(gameMain.batch);
         gameMain.batch.end();
     }
 
     private void updatePhysics() {
-        bulletsIterator = bullets.iterator();
-        while (bulletsIterator.hasNext()) {
-            Bullet bullet = bulletsIterator.next();
-            bullet.update();
-            if (map.getMap()[(int) bullet.getX() / 64][(int) bullet.getY() / 64] == 1) {
-                bulletsIterator.remove();
-            }
-        }
+        managerBullets.update();
     }
 
     private boolean handleInput() {
@@ -164,17 +152,20 @@ public class ScreenGame extends ScreenAdapter {
                 posX = tileIndexX * 64 + 64;
             }
         }
-        if (Gdx.input.isTouched()) {
+
+        // Needs to be changed later for custom InputProcessor/InputAdapter
+        if (Gdx.input.justTouched()) {
             Vector3 mousePositionInGameWorld = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
             camera.unproject(mousePositionInGameWorld);
 
-            Bullet bullet = new Bullet(posX + 32, posY + 32, mousePositionInGameWorld.x, mousePositionInGameWorld.y);
-            bullets.add(bullet);
+            // Temp for now, each enemy and player will be responsible for it in method shoot()
+            BulletBasic bulletBasic = new BulletBasic(
+                    true, posX + 32, posY + 32,
+                    mousePositionInGameWorld.x, mousePositionInGameWorld.y
+            );
+            managerBullets.addBullet(bulletBasic);
         }
 
-        if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
-            System.out.println(bullets.size);
-        }
         if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
             gameMain.setScreen(gameMain.screenMainMenu);
             return true;
