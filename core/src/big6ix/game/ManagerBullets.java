@@ -11,10 +11,12 @@ public class ManagerBullets {
 
     // References to objects needed by ManagerBullets
     private final Map map;
+    private final Player player;
 
-    public ManagerBullets(Map map) {
+    public ManagerBullets(Player player, Map map) {
         this.bullets = new Array<Bullet>(false, Constants.INITIAL_BULLETS_CAPACITY);
         this.map = map;
+        this.player = player;
     }
 
     public void update() {
@@ -23,16 +25,26 @@ public class ManagerBullets {
         while (bulletsIterator.hasNext()) {
             currentBullet = bulletsIterator.next();
 
-            currentBullet.update();
             if (checkTerrainCollision(currentBullet)) {
                 bulletsIterator.remove();
             }
+            if (checkPlayerCollision(currentBullet)) {
+                System.out.println("Player hit!");
+                bulletsIterator.remove();
+            }
+            if (checkEnemyCollision(currentBullet)) {
+
+            }
+            currentBullet.update();
         }
     }
 
     public void render(SpriteBatch batch) {
         for (Bullet currentBullet : bullets) {
-            batch.draw(currentBullet.getAtlasRegion(), currentBullet.getX() - 16, currentBullet.getY() - 16, 32, 32);
+            batch.draw(
+                    currentBullet.getAtlasRegion(), currentBullet.getX(), currentBullet.getY(),
+                    currentBullet.getWidth(), currentBullet.getHeight()
+            );
         }
     }
 
@@ -41,7 +53,8 @@ public class ManagerBullets {
     }
 
     private boolean checkTerrainCollision(Bullet bullet) {
-        if (map.getMap()[(int) bullet.getX() / 64][(int) bullet.getY() / 64] == 1) {
+        // Add conditions depending on current bullet speedX and speedY
+        if (map.getMapArray()[(int) bullet.getY() / map.getTileHeight()][(int) bullet.getX() / map.getTileWidth()] == 1) {
             return true;
         }
 
@@ -56,7 +69,14 @@ public class ManagerBullets {
 
     // Used only for enemy (not friendly) bullets
     private boolean checkPlayerCollision(Bullet bullet) {
-        // do zrobienia
+        if (!bullet.isFriendly()) {
+            float distanceX = (bullet.getX() + bullet.getWidth() / 2) - (player.getX() + player.getWidth() / 2);
+            float distanceY = (bullet.getY() + bullet.getHeight() / 2) - (player.getY() + player.getHeight() / 2);
+            float distance = (float) Math.sqrt(distanceX * distanceX + distanceY * distanceY);
+            if (distance <= (bullet.getWidth() / 2 + player.getWidth() / 2)) {
+                return true;
+            }
+        }
         return false;
     }
 }

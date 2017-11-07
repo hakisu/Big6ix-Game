@@ -38,15 +38,6 @@ public class ScreenMainMenu extends ScreenAdapter {
         Gdx.gl.glClearColor(0.3f, 0.5f, 1, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        gameMain.batch.begin();
-
-        // mozna usunac
-        gameMain.font.draw(
-                gameMain.batch, "testujemy pisanie",
-                Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
-
-        gameMain.batch.end();
-
         // tymczasowy sposob aby odpalic gre
         if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
             gameMain.setScreen(gameMain.screenGame);
