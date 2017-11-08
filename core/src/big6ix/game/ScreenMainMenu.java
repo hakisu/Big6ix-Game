@@ -87,5 +87,4 @@ public class ScreenMainMenu extends ScreenAdapter {
         skin.dispose();
         atlas.dispose();
     }
-
 }

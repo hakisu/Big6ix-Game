@@ -29,11 +29,15 @@ public class GameMain extends Game {
         FreeTypeFontGenerator fontGenerator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/OpenSans-Regular.ttf"));
         FreeTypeFontParameter fontParameter = new FreeTypeFontParameter();
         fontParameter.size = 64;
-        fontParameter.flip = true;
+        fontParameter.flip = false;
         font = fontGenerator.generateFont(fontParameter);
         fontGenerator.dispose();
 
-        Cursor gameCursor = Gdx.graphics.newCursor(new Pixmap(Gdx.files.internal("graphics/crosshair.png")), 16, 16);
+        // Choosing crosshair image as game cursor
+        Cursor gameCursor = Gdx.graphics.newCursor(
+                new Pixmap(Gdx.files.internal("graphics/crosshair.png")),
+                Constants.CURSOR_X_HOTSPOT, Constants.CURSOR_Y_HOTSPOT
+        );
         Gdx.graphics.setCursor(gameCursor);
 
         // Screens initialization
