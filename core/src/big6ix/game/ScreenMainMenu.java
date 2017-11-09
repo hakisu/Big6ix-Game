@@ -21,7 +21,7 @@ public class ScreenMainMenu extends ScreenAdapter {
 
     public ScreenMainMenu(final GameMain game) {
         this.gameMain = game;
-        //ustawienie skins
+
         atlas = new TextureAtlas("uiskin.atlas");
         skin = new Skin(Gdx.files.internal("uiskin.json"), atlas);
         stage = new Stage();
@@ -31,21 +31,20 @@ public class ScreenMainMenu extends ScreenAdapter {
     public void show() {
         Gdx.input.setInputProcessor(stage);
 
-        //Tworzenie tabeli
         Table mainTable = new Table();
         mainTable.setFillParent(true);
-        //Ustawienie miejsca
+
         mainTable.center();
 
-        //Tworzenie buttonów
+
         TextButton playButton = new TextButton("Play", skin);
         TextButton optionsButton = new TextButton("Options", skin);
         TextButton exitButton = new TextButton("Exit", skin);
-        playButton.getLabel().setFontScale(3,3);
-        optionsButton.getLabel().setFontScale(3,3);
-        exitButton.getLabel().setFontScale(3,3);
+        playButton.getLabel().setFontScale(3, 3);
+        optionsButton.getLabel().setFontScale(3, 3);
+        exitButton.getLabel().setFontScale(3, 3);
 
-        //Obsługa kliknięć
+        // Manage inputs
         playButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -65,14 +64,13 @@ public class ScreenMainMenu extends ScreenAdapter {
             }
         });
 
-        //Dodanie buttonów do tabeli .expandY() aby zwiekszyc odstep w pionie
+        // Use .expandY() if you want to increase spacing between buttons
         mainTable.add(playButton).width(Gdx.graphics.getWidth() / 3);
         mainTable.row();
         mainTable.add(optionsButton).width(Gdx.graphics.getWidth() / 4);
         mainTable.row();
         mainTable.add(exitButton).width(Gdx.graphics.getWidth() / 6);
 
-        //Dodanie tabeli do stage
         stage.addActor(mainTable);
     }
 

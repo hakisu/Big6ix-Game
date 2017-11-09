@@ -37,11 +37,10 @@ public class ScreenGame extends ScreenAdapter {
         camera = new OrthographicCamera();
         camera.setToOrtho(true, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
-        //temp
         managerEnemies.addEnemy(new EnemyShooter(120, 200));
         managerEnemies.addEnemy(new EnemyShooter(700, 1200));
         managerEnemies.addEnemy(new EnemyShooter(1100, 700));
-        managerEnemies.addEnemy(new EnemyShooter(1730, 1100));
+        managerEnemies.addEnemy(new EnemyShooter(1530, 1100));
     }
 
     @Override
@@ -95,7 +94,6 @@ public class ScreenGame extends ScreenAdapter {
 
         // Ending drawing in batch
         gameMain.batch.end();
-        System.out.println(gameMain.batch.renderCalls);
     }
 
     private void update() {
@@ -105,12 +103,10 @@ public class ScreenGame extends ScreenAdapter {
     }
 
     private void handleInput() {
-        // Needs to be changed later for custom InputProcessor/InputAdapter
         if (Gdx.input.justTouched()) {
             Vector3 mousePositionInGameWorld = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
             camera.unproject(mousePositionInGameWorld);
 
-            // Temp for now, each enemy and player will be responsible for it in method shoot()
             BulletBasic bulletBasic = new BulletBasic(
                     true, Constants.BULLET_BASIC_SPEED,
                     player.getX() + player.getWidth() / 2 - Constants.BULLET_BASIC_WIDTH / 2,

@@ -17,7 +17,7 @@ public class Map {
     private int rowsAmount;
     private int columnsAmount;
 
-    // Testing
+    // Temp
     private ArrayList<Room> rooms;
     private Random random;
 
@@ -136,7 +136,6 @@ public class Map {
         mapArray[startingPosY + 1][j+1] = 1;
         mapArray[startingPosY + 2][j+1] = 1;
 
-//        mapArray[startingPosY + 2][j] = 1;
         int i = startingPosY + 2;
 
         while (i < posY + 1) {
