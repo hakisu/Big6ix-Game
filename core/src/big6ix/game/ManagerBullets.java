@@ -6,17 +6,23 @@ import com.badlogic.gdx.utils.Array;
 import java.util.Iterator;
 
 public class ManagerBullets {
-    private Array<Bullet> bullets = null;
-    private Iterator<Bullet> bulletsIterator = null;
 
     // References to objects needed by ManagerBullets
-    private final Map map;
-    private final Player player;
+    private Map map;
+    private Player player;
+    private ManagerEnemies managerEnemies;
+
+    private Array<Bullet> bullets = null;
+    private Iterator<Bullet> bulletsIterator = null;
 
     public ManagerBullets(Player player, Map map) {
         this.bullets = new Array<Bullet>(false, Constants.INITIAL_BULLETS_CAPACITY);
         this.map = map;
         this.player = player;
+    }
+
+    public void setManagerEnemies(ManagerEnemies managerEnemies) {
+        this.managerEnemies = managerEnemies;
     }
 
     public void update() {
@@ -33,7 +39,7 @@ public class ManagerBullets {
                 bulletsIterator.remove();
             }
             if (checkEnemyCollision(currentBullet)) {
-
+                bulletsIterator.remove();
             }
             currentBullet.update();
         }
@@ -54,8 +60,11 @@ public class ManagerBullets {
 
     private boolean checkTerrainCollision(Bullet bullet) {
         // Add conditions depending on current bullet speedX and speedY
-        if (map.getMapArray()[(int) bullet.getY() / map.getTileHeight()][(int) bullet.getX() / map.getTileWidth()] == 1) {
-            return true;
+        if (bullet.getX() >= 0 && bullet.getX() <= map.getTileWidth() * map.getMapArray()[0].length
+                && bullet.getY() >= 0 && bullet.getY() <= map.getTileHeight() * map.getMapArray().length) {
+            if (map.getMapArray()[(int) bullet.getY() / map.getTileHeight()][(int) bullet.getX() / map.getTileWidth()] == 1) {
+                return true;
+            }
         }
 
         return false;
@@ -63,7 +72,21 @@ public class ManagerBullets {
 
     // Used only for friendly bullets
     private boolean checkEnemyCollision(Bullet bullet) {
-        // do zrobienia
+        if (bullet.isFriendly()) {
+            Enemy currentEnemy;
+            Iterator<Enemy> enemiesIterator = managerEnemies.getCurrentIteratorForEnemiesArray();
+            while (enemiesIterator.hasNext()) {
+                currentEnemy = enemiesIterator.next();
+
+                float distanceX = (bullet.getX() + bullet.getWidth() / 2) - (currentEnemy.getX() + currentEnemy.getWidth() / 2);
+                float distanceY = (bullet.getY() + bullet.getHeight() / 2) - (currentEnemy.getY() + currentEnemy.getHeight() / 2);
+                float distance = (float) Math.sqrt(distanceX * distanceX + distanceY * distanceY);
+                if (distance <= (bullet.getWidth() / 2 + currentEnemy.getWidth() / 2)) {
+                    enemiesIterator.remove();
+                    return true;
+                }
+            }
+        }
         return false;
     }
 

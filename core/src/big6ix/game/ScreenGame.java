@@ -28,10 +28,11 @@ public class ScreenGame extends ScreenAdapter {
     public ScreenGame(GameMain gameMain) {
         this.gameMain = gameMain;
 
-        map = new Map(3, 3);
+        map = new Map(1000, 1000);
         player = new Player();
         managerBullets = new ManagerBullets(this.player, this.map);
         managerEnemies = new ManagerEnemies(this.player, this.managerBullets);
+        managerBullets.setManagerEnemies(managerEnemies);
 
         camera = new OrthographicCamera();
         camera.setToOrtho(true, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -78,8 +79,8 @@ public class ScreenGame extends ScreenAdapter {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        camera.position.x = player.getX() + 32;
-        camera.position.y = player.getY() + 32;
+        camera.position.x = player.getX() + player.getWidth() / 2;
+        camera.position.y = player.getY() + player.getWidth() / 2;
 
         camera.update();
         gameMain.batch.setProjectionMatrix(camera.combined);
@@ -89,11 +90,12 @@ public class ScreenGame extends ScreenAdapter {
 
         map.render(gameMain.batch);
         managerEnemies.render(gameMain.batch);
-        player.render(gameMain.batch);
+        player.render(gameMain.batch, this.camera);
         managerBullets.render(gameMain.batch);
 
         // Ending drawing in batch
         gameMain.batch.end();
+        System.out.println(gameMain.batch.renderCalls);
     }
 
     private void update() {
@@ -110,13 +112,17 @@ public class ScreenGame extends ScreenAdapter {
 
             // Temp for now, each enemy and player will be responsible for it in method shoot()
             BulletBasic bulletBasic = new BulletBasic(
-                    true,
+                    true, Constants.BULLET_BASIC_SPEED,
                     player.getX() + player.getWidth() / 2 - Constants.BULLET_BASIC_WIDTH / 2,
                     player.getY() + player.getHeight() / 2 - Constants.BULLET_BASIC_HEIGHT / 2,
                     mousePositionInGameWorld.x - Constants.BULLET_BASIC_WIDTH / 2,
                     mousePositionInGameWorld.y - Constants.BULLET_BASIC_HEIGHT / 2
             );
             managerBullets.addBullet(bulletBasic);
+        }
+
+        if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
+            player.speed = Constants.PLAYER_SPEED + 20;
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {

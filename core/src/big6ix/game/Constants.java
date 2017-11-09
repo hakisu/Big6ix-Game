@@ -4,7 +4,10 @@ public final class Constants {
     // AtlasRegion names
     public static final String ATLAS_BULLET_BASIC_NAME = "bullet";
     public static final String ATLAS_ENEMY_NAME = "enemy";
-    public static final String ATLAS_PLAYER_NAME = "player";
+    public static final String ATLAS_PLAYER_DOWN_NAME = "player_down";
+    public static final String ATLAS_PLAYER_LEFT_NAME = "player_left";
+    public static final String ATLAS_PLAYER_UP_NAME = "player_up";
+    public static final String ATLAS_PLAYER_RIGHT_NAME = "player_right";
     public static final String ATLAS_WALL_NAME = "wall";
     public static final String ATLAS_FLOOR_NAME = "floor";
 
@@ -25,8 +28,8 @@ public final class Constants {
 
     // Bullets properties
     public static final float BULLET_BASIC_SPEED = 17;
-    public static final int BULLET_BASIC_WIDTH = 32;
-    public static final int BULLET_BASIC_HEIGHT = 32;
+    public static final int BULLET_BASIC_WIDTH = 16;
+    public static final int BULLET_BASIC_HEIGHT = 16;
 
     // Player properties
     public static final float PLAYER_SPEED = 6;

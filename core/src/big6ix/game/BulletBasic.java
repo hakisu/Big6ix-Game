@@ -12,11 +12,10 @@ public final class BulletBasic extends Bullet {
     public BulletBasic() {
     }
 
-    public BulletBasic(boolean friendly, float sourceX, float sourceY, float targetX, float targetY) {
-        super(friendly);
+    public BulletBasic(boolean friendly, float speed, float sourceX, float sourceY, float targetX, float targetY) {
+        super(friendly, speed);
         this.width = Constants.BULLET_BASIC_WIDTH;
         this.height = Constants.BULLET_BASIC_HEIGHT;
-        this.speed = Constants.BULLET_BASIC_SPEED;
 
         // Calculations to receive speed of bullet in X and Y axis
         float distance = (float) Math.sqrt((targetX - sourceX) * (targetX - sourceX) + (targetY - sourceY) * (targetY - sourceY));

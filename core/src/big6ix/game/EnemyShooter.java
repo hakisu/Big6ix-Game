@@ -19,7 +19,7 @@ public final class EnemyShooter extends Enemy {
     }
 
     private void shoot(Player player, ManagerBullets managerBullets) {
-        Bullet bulletBasic = new BulletBasic(false, this.x + 32, this.y + 32, player.getX() + 32, player.getY() + 32);
+        Bullet bulletBasic = new BulletBasic(false, Constants.BULLET_BASIC_SPEED, this.x + 32, this.y + 32, player.getX() + 32, player.getY() + 32);
         managerBullets.addBullet(bulletBasic);
     }
 

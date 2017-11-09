@@ -6,12 +6,13 @@ import com.badlogic.gdx.utils.Array;
 import java.util.Iterator;
 
 public class ManagerEnemies {
-    private Array<Enemy> enemies = null;
-    private Iterator<Enemy> enemiesIterator = null;
 
     // References to objects needed by ManagerEnemies
     private final Player player;
     private final ManagerBullets managerBullets;
+
+    private Array<Enemy> enemies = null;
+    private Iterator<Enemy> enemiesIterator = null;
 
     public ManagerEnemies(Player player, ManagerBullets managerBullets) {
         this.enemies = new Array<Enemy>(false, Constants.INITIAL_ENEMIES_CAPACITY);
@@ -40,5 +41,9 @@ public class ManagerEnemies {
 
     public void addEnemy(Enemy enemy) {
         this.enemies.add(enemy);
+    }
+
+    public Iterator<Enemy> getCurrentIteratorForEnemiesArray() {
+        return enemies.iterator();
     }
 }

@@ -1,10 +1,9 @@
 package big6ix.game;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -13,25 +12,20 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
-
 public class ScreenMainMenu extends ScreenAdapter {
 
-    final GameMain gameMain;
-    private SpriteBatch batch;
-    protected Stage stage;
+    private final GameMain gameMain;
+    private Stage stage;
+    private Skin skin;
     private TextureAtlas atlas;
-    protected Skin skin;
 
-    public ScreenMainMenu(final GameMain game)
-    {
+    public ScreenMainMenu(final GameMain game) {
         this.gameMain = game;
         //ustawienie skins
         atlas = new TextureAtlas("uiskin.atlas");
         skin = new Skin(Gdx.files.internal("uiskin.json"), atlas);
-        batch = new SpriteBatch();
         stage = new Stage();
     }
-
 
     @Override
     public void show() {
@@ -47,27 +41,36 @@ public class ScreenMainMenu extends ScreenAdapter {
         TextButton playButton = new TextButton("Play", skin);
         TextButton optionsButton = new TextButton("Options", skin);
         TextButton exitButton = new TextButton("Exit", skin);
+        playButton.getLabel().setFontScale(3,3);
+        optionsButton.getLabel().setFontScale(3,3);
+        exitButton.getLabel().setFontScale(3,3);
 
         //Obsługa kliknięć
-        playButton.addListener(new ClickListener(){
+        playButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                ((Game)Gdx.app.getApplicationListener()).setScreen(gameMain.screenGame);
+                gameMain.setScreen(gameMain.screenGame);
             }
         });
-        exitButton.addListener(new ClickListener(){
+        optionsButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                gameMain.setScreen(gameMain.screenSettings);
+            }
+        });
+        exitButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 Gdx.app.exit();
             }
         });
 
-        //Dodanie buttonów do tabeli
-        mainTable.add(playButton);
+        //Dodanie buttonów do tabeli .expandY() aby zwiekszyc odstep w pionie
+        mainTable.add(playButton).width(Gdx.graphics.getWidth() / 3);
         mainTable.row();
-        mainTable.add(optionsButton);
+        mainTable.add(optionsButton).width(Gdx.graphics.getWidth() / 4);
         mainTable.row();
-        mainTable.add(exitButton);
+        mainTable.add(exitButton).width(Gdx.graphics.getWidth() / 6);
 
         //Dodanie tabeli do stage
         stage.addActor(mainTable);
@@ -80,11 +83,22 @@ public class ScreenMainMenu extends ScreenAdapter {
 
         stage.act();
         stage.draw();
+
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+            Gdx.app.exit();
+        }
+
+    }
+
+    @Override
+    public void hide() {
+        Gdx.input.setInputProcessor(null);
     }
 
     @Override
     public void dispose() {
         skin.dispose();
         atlas.dispose();
+        stage.dispose();
     }
 }

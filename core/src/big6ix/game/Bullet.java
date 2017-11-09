@@ -15,8 +15,9 @@ public abstract class Bullet {
     public Bullet() {
     }
 
-    public Bullet(boolean friendly) {
+    public Bullet(boolean friendly, float speed) {
         this.friendly = friendly;
+        this.speed = speed;
     }
 
     public float getX() {
