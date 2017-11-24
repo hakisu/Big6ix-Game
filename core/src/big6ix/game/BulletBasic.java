@@ -6,7 +6,7 @@ public final class BulletBasic extends Bullet {
     private static TextureAtlas.AtlasRegion atlasRegion;
 
     static {
-        atlasRegion = GameMain.gameAtlas.findRegion(Constants.ATLAS_BULLET_BASIC_NAME);
+        atlasRegion = GameMain.getGameAtlas().findRegion(Constants.ATLAS_BULLET_BASIC_NAME);
     }
 
     public BulletBasic() {

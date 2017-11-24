@@ -12,8 +12,8 @@ public class ManagerBullets {
     private Player player;
     private ManagerEnemies managerEnemies;
 
-    private Array<Bullet> bullets = null;
-    private Iterator<Bullet> bulletsIterator = null;
+    private Array<Bullet> bullets;
+    private Iterator<Bullet> bulletsIterator;
 
     public ManagerBullets(Player player, Map map) {
         this.bullets = new Array<Bullet>(false, Constants.INITIAL_BULLETS_CAPACITY);
@@ -43,6 +43,8 @@ public class ManagerBullets {
             }
             currentBullet.update();
         }
+
+
     }
 
     public void render(SpriteBatch batch) {
@@ -62,7 +64,7 @@ public class ManagerBullets {
         // Add conditions depending on current bullet speedX and speedY
         if (bullet.getX() >= 0 && bullet.getX() <= map.getTileWidth() * map.getMapArray()[0].length
                 && bullet.getY() >= 0 && bullet.getY() <= map.getTileHeight() * map.getMapArray().length) {
-            if (map.getMapArray()[(int) bullet.getY() / map.getTileHeight()][(int) bullet.getX() / map.getTileWidth()] == 1) {
+            if (!map.getMapArray()[(int) bullet.getY() / map.getTileHeight()][(int) bullet.getX() / map.getTileWidth()].isWalkable()) {
                 return true;
             }
         }

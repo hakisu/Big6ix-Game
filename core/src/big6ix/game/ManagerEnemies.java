@@ -8,16 +8,18 @@ import java.util.Iterator;
 public class ManagerEnemies {
 
     // References to objects needed by ManagerEnemies
-    private final Player player;
-    private final ManagerBullets managerBullets;
+    private Player player;
+    private ManagerBullets managerBullets;
+    private Map map;
 
-    private Array<Enemy> enemies = null;
-    private Iterator<Enemy> enemiesIterator = null;
+    private Array<Enemy> enemies;
+    private Iterator<Enemy> enemiesIterator;
 
-    public ManagerEnemies(Player player, ManagerBullets managerBullets) {
+    public ManagerEnemies(Player player, ManagerBullets managerBullets, Map map) {
         this.enemies = new Array<Enemy>(false, Constants.INITIAL_ENEMIES_CAPACITY);
         this.player = player;
         this.managerBullets = managerBullets;
+        this.map = map;
     }
 
     public void update() {
@@ -25,8 +27,7 @@ public class ManagerEnemies {
         enemiesIterator = enemies.iterator();
         while (enemiesIterator.hasNext()) {
             currentEnemy = enemiesIterator.next();
-
-            currentEnemy.update(player, managerBullets);
+            currentEnemy.update(player, managerBullets, map);
         }
     }
 

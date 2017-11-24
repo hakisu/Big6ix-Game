@@ -12,14 +12,14 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFont
 
 public class GameMain extends Game {
     // Game screens
-    ScreenGame screenGame = null;
-    ScreenMainMenu screenMainMenu = null;
-    ScreenSettings screenSettings = null;
+    ScreenGame screenGame;
+    ScreenMainMenu screenMainMenu;
+    ScreenSettings screenSettings;
 
     // Batch and font used for drawing available for different screen objects
-    SpriteBatch batch = null;
-    BitmapFont font = null;
-    static TextureAtlas gameAtlas = null;
+    SpriteBatch batch;
+    BitmapFont font;
+    private static TextureAtlas gameAtlas;
 
     @Override
     public void create() {
@@ -73,5 +73,9 @@ public class GameMain extends Game {
         screenGame.dispose();
         screenMainMenu.dispose();
         gameAtlas.dispose();
+    }
+
+    public static TextureAtlas getGameAtlas() {
+        return gameAtlas;
     }
 }

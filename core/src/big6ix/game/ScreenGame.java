@@ -9,17 +9,14 @@ import com.badlogic.gdx.math.Vector3;
 
 public class ScreenGame extends ScreenAdapter {
     private final GameMain gameMain;
-
-    ManagerBullets managerBullets = null;
-    ManagerEnemies managerEnemies = null;
+    private final long ticksPerSecond = 60;
+    ManagerBullets managerBullets;
+    ManagerEnemies managerEnemies;
     Player player = null;
-
     private Map map;
     private OrthographicCamera camera;
-
     // Time management fields
     private long oldTime;
-    private final long ticksPerSecond = 60;
     private long timeAccumulator = 0;
     // frameTime represents time reserved for one frame in nanoseconds
     private long frameTime = 1000000000 / ticksPerSecond;
@@ -28,19 +25,19 @@ public class ScreenGame extends ScreenAdapter {
     public ScreenGame(GameMain gameMain) {
         this.gameMain = gameMain;
 
-        map = new Map(1000, 1000);
+        map = new Map(Constants.MAP_ROWS_AMOUNT, Constants.MAP_COLUMNS_AMOUNT);
         player = new Player();
         managerBullets = new ManagerBullets(this.player, this.map);
-        managerEnemies = new ManagerEnemies(this.player, this.managerBullets);
+        managerEnemies = new ManagerEnemies(this.player, this.managerBullets, this.map);
         managerBullets.setManagerEnemies(managerEnemies);
 
         camera = new OrthographicCamera();
         camera.setToOrtho(true, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
-        managerEnemies.addEnemy(new EnemyShooter(120, 200));
+        managerEnemies.addEnemy(new EnemyShooter(128, 200));
         managerEnemies.addEnemy(new EnemyShooter(700, 1200));
         managerEnemies.addEnemy(new EnemyShooter(1100, 700));
-        managerEnemies.addEnemy(new EnemyShooter(1530, 1100));
+        managerEnemies.addEnemy(new EnemyShooter(1520, 1100));
     }
 
     @Override
@@ -61,7 +58,6 @@ public class ScreenGame extends ScreenAdapter {
 
         if (timeAccumulator >= frameTime) {
             timeAccumulator -= frameTime;
-
             ++updatesCount;
             update();
             handleInput();
@@ -94,6 +90,7 @@ public class ScreenGame extends ScreenAdapter {
 
         // Ending drawing in batch
         gameMain.batch.end();
+        System.out.println(gameMain.batch.renderCalls);
     }
 
     private void update() {
@@ -115,10 +112,6 @@ public class ScreenGame extends ScreenAdapter {
                     mousePositionInGameWorld.y - Constants.BULLET_BASIC_HEIGHT / 2
             );
             managerBullets.addBullet(bulletBasic);
-        }
-
-        if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
-            player.speed = Constants.PLAYER_SPEED + 20;
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {

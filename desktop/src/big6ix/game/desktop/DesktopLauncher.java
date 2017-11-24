@@ -18,6 +18,7 @@ public class DesktopLauncher {
         texturePackerSettings.minHeight = 1024;
         texturePackerSettings.combineSubdirectories = true;
         texturePackerSettings.flattenPaths = true;
+        texturePackerSettings.alias = false;
         TexturePacker.process(texturePackerSettings, "graphics", "graphics", "gameTexturePack");
 
         // Basic configuration of the game

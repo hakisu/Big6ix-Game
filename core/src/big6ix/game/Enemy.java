@@ -1,13 +1,14 @@
 package big6ix.game;
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 
 public abstract class Enemy {
+
     protected float x;
     protected float y;
     protected int width;
     protected int height;
+    protected float speed;
 
     private int shootingIntervalInUpdates = 60;
     private int updatesTimer = 0;
@@ -33,6 +34,11 @@ public abstract class Enemy {
         return height;
     }
 
-    public abstract void update(Player player, ManagerBullets managerBullets);
+    public float getSpeed() {
+        return speed;
+    }
+
+    public abstract void update(Player player, ManagerBullets managerBullets, Map map);
+
     public abstract AtlasRegion getAtlasRegion();
 }
