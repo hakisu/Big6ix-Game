@@ -1,7 +1,11 @@
-package big6ix.game;
+package big6ix.game.Map;
 
+import big6ix.game.*;
+import big6ix.game.PathFinding.HeuristicDistance;
 import big6ix.game.PathFinding.TileConnection;
+import big6ix.game.PathFinding.TilePath;
 import com.badlogic.gdx.ai.pfa.Connection;
+import com.badlogic.gdx.ai.pfa.indexed.IndexedAStarPathFinder;
 import com.badlogic.gdx.ai.pfa.indexed.IndexedGraph;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Array;
@@ -10,28 +14,31 @@ import java.util.ArrayList;
 
 public class Map implements IndexedGraph<Tile> {
 
+    private static int currentUniqueId = 0;
+
     private Tile[][] mapArray;
     private int tileWidth;
     private int tileHeight;
     private int rowsAmount;
     private int columnsAmount;
-    private ArrayList<Room> roomsTypes;
-    private ArrayList<Room> mapRooms;
+    private ArrayList<RoomShape> roomShapes;
+    private ArrayList<Room> rooms;
+    private IndexedAStarPathFinder<Tile> pathFinder;
 
     public Map(int rowsAmount, int columnsAmount) {
-        // Load all types of rooms from "*.room" files into ArrayList roomsTypes
+        // Load all types of rooms from "*.room" files into ArrayList roomShapes
         RoomsLoader roomsLoader = new RoomsLoader(Constants.ROOMS_DIRECTORY_PATH);
-        roomsTypes = roomsLoader.loadRoomFiles();
+        roomShapes = roomsLoader.loadRoomFiles();
 
         tileWidth = Constants.TILE_WIDTH;
         tileHeight = Constants.TILE_HEIGHT;
         this.rowsAmount = rowsAmount;
         this.columnsAmount = columnsAmount;
 
-        mapRooms = new ArrayList<>();
+        rooms = new ArrayList<>();
         mapArray = new Tile[rowsAmount][columnsAmount];
         generateMap(rowsAmount, columnsAmount);
-
+        pathFinder = new IndexedAStarPathFinder<>(this);
     }
 
     public void render(SpriteBatch batch) {
@@ -46,23 +53,27 @@ public class Map implements IndexedGraph<Tile> {
 
     private void generateMap(int rowsAmount, int columnsAmount) {
         // Initialize whole map with empty tiles (tiles that have their tileType set to TileType.EMPTY)
-        // Give each tile uniqueId which is necessary for IndexedAStarPathFinder
+        // Give each tile uniqueIdForWalkableTiles which is necessary for IndexedAStarPathFinder
         for (int i = 0; i < rowsAmount; ++i) {
             for (int j = 0; j < columnsAmount; ++j) {
                 mapArray[i][j] = new Tile(j + i * columnsAmount, TileType.EMPTY);
             }
         }
 
-        for (int i = 0; i < roomsTypes.get(0).getRowsAmount(); i++) {
-            for (int j = 0; j < roomsTypes.get(0).getColumnsAmount(); j++) {
-                mapArray[i][j].setTileType(roomsTypes.get(0).getRoomArray()[i][j]);
+        for (int i = 0; i < roomShapes.get(0).getRowsAmount(); i++) {
+            for (int j = 0; j < roomShapes.get(0).getColumnsAmount(); j++) {
+                TileType currentTileType = roomShapes.get(0).getRoomArray()[i][j];
+                mapArray[i][j].setTileType(currentTileType);
+                if (currentTileType.isWalkable()) {
+                    mapArray[i][j].setUniqueIdForWalkableTiles(currentUniqueId++);
+                }
             }
         }
-        mapRooms.add(roomsTypes.get(0));
-        mapRooms.get(0).setX(0);
-        mapRooms.get(0).setY(0);
+        rooms.add(new Room(roomShapes.get(0)));
+        rooms.get(0).setX(0);
+        rooms.get(0).setY(0);
 
-//        for (int temp : mapRooms.get(0).calculateWalkableTilesUniqueIds()) {
+//        for (int temp : rooms.get(0).calculateWalkableTilesUniqueIds()) {
 //            System.out.println(temp);
 //        }
 
@@ -71,9 +82,9 @@ public class Map implements IndexedGraph<Tile> {
 //        posX = random.nextInt(100 - 40 + 1) + 40;
 //        posY = random.nextInt(100 - 40 + 1) + 40;
 //
-//        for (int i = 0; i < roomsTypes.get(1).getRowsAmount(); ++i) {
-//            for (int j = 0; j < roomsTypes.get(1).getColumnsAmount(); ++j) {
-//                mapArray[i + posY][j + posX].setType(roomsTypes.get(1).getRoomArray()[i][j]);
+//        for (int i = 0; i < roomShapes.get(1).getRowsAmount(); ++i) {
+//            for (int j = 0; j < roomShapes.get(1).getColumnsAmount(); ++j) {
+//                mapArray[i + posY][j + posX].setType(roomShapes.get(1).getRoomArray()[i][j]);
 //            }
 //        }
 //
@@ -120,22 +131,27 @@ public class Map implements IndexedGraph<Tile> {
         return tileHeight;
     }
 
+    public boolean searchPath(Tile startTile, Tile endTile, HeuristicDistance heuristicDistance, TilePath outPath) {
+        return pathFinder.searchNodePath(startTile, endTile, heuristicDistance, outPath);
+    }
+
     @Override
     public int getIndex(Tile node) {
-        return node.getUniqueId();
+        return node.getUniqueIdForWalkableTiles();
     }
 
     @Override
     public int getNodeCount() {
-        return rowsAmount * columnsAmount;
+        System.out.println(currentUniqueId);
+        return currentUniqueId;
     }
 
     @Override
     public Array<Connection<Tile>> getConnections(Tile fromNode) {
         Array<Connection<Tile>> connections = new Array<>();
 
-        int tileIndexX = fromNode.getUniqueId() % Constants.MAP_COLUMNS_AMOUNT;
-        int tileIndexY = fromNode.getUniqueId() / Constants.MAP_COLUMNS_AMOUNT;
+        int tileIndexX = fromNode.getIndex() % Constants.MAP_COLUMNS_AMOUNT;
+        int tileIndexY = fromNode.getIndex() / Constants.MAP_COLUMNS_AMOUNT;
 
         // Return all possible connections from given Tile based on the status of "walkable" variables of its neighbours
         if (mapArray[tileIndexY][tileIndexX].isWalkable()) {

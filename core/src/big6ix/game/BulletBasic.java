@@ -16,6 +16,7 @@ public final class BulletBasic extends Bullet {
         super(friendly, speed);
         this.width = Constants.BULLET_BASIC_WIDTH;
         this.height = Constants.BULLET_BASIC_HEIGHT;
+        this.damage = Constants.BULLET_BASIC_DAMAGE;
 
         // Calculations to receive speed of bullet in X and Y axis
         float distance = (float) Math.sqrt((targetX - sourceX) * (targetX - sourceX) + (targetY - sourceY) * (targetY - sourceY));

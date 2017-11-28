@@ -1,9 +1,11 @@
 package big6ix.game;
 
+import big6ix.game.Map.Map;
 import big6ix.game.PathFinding.HeuristicDistance;
 import big6ix.game.PathFinding.TilePath;
-import com.badlogic.gdx.ai.pfa.indexed.IndexedAStarPathFinder;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+
+import java.util.Random;
 
 public final class EnemyShooter extends Enemy {
 
@@ -15,13 +17,17 @@ public final class EnemyShooter extends Enemy {
 
     private int updatesTimer = 0;
     private int shootingIntervalInUpdates = 60;
-
+    private TilePath tilePath;
+    private boolean inMovementBetweenTiles = false;
 
     public EnemyShooter(float x, float y) {
         super(x, y);
+        Random random = new Random();
         this.width = Constants.ENEMY_SHOOTER_WIDTH;
         this.height = Constants.ENEMY_SHOOTER_HEIGHT;
-        this.speed = Constants.ENEMY_SHOOTER_SPEED;
+        this.speed = random.nextFloat() * (Constants.ENEMY_SHOOTER_SPEED_VARIATION) + Constants.ENEMY_SHOOTER_SPEED_BASE;
+        this.health = Constants.ENEMY_SHOOTER_HEALTH;
+        tilePath = new TilePath();
     }
 
     private void shoot(Player player, ManagerBullets managerBullets) {
@@ -41,27 +47,49 @@ public final class EnemyShooter extends Enemy {
             updatesTimer = 0;
         }
 
-        TilePath tilePath = new TilePath();
-        IndexedAStarPathFinder<Tile> pathFinder = new IndexedAStarPathFinder<>(map);
-        pathFinder.searchNodePath(
-                map.getMapArray()[(int) this.y / map.getTileHeight()][(int) this.x / map.getTileWidth()],
-                map.getMapArray()[(int) player.getY() / map.getTileHeight()][(int) player.getX() / map.getTileWidth()],
-                new HeuristicDistance(),
-                tilePath
-        );
+        int startTileIndexY = (int) (this.y + this.height / 2) / map.getTileHeight();
+        int startTileIndexX = (int) (this.x + this.width / 2) / map.getTileWidth();
+        int endTileIndexY = (int) (player.getY() + player.getHeight() / 2) / map.getTileHeight();
+        int endTileIndexX = (int) (player.getX() + player.getWidth() / 2) / map.getTileWidth();
+        Tile startTile = map.getMapArray()[startTileIndexY][startTileIndexX];
+        Tile endTile = map.getMapArray()[endTileIndexY][endTileIndexX];
 
-        if (tilePath.getCount() != 0) {
-            int indexToReach = tilePath.getCount() >= 2 ? 1 : 0;
-            if (this.x < tilePath.get(indexToReach).calculatePosX()) {
-                this.x += this.speed;
-            } else if (this.x > tilePath.get(indexToReach).calculatePosX()) {
-                this.x -= this.speed;
+        if (inMovementBetweenTiles == false) {
+            // Find new path for this entity and hold it in tilePath
+            tilePath.clear();
+            boolean pathFound = map.searchPath(startTile, endTile, new HeuristicDistance(), tilePath);
+
+            // If there is no path from enemy to player location finish this update
+            if (pathFound == false) {
+                return;
+            } else {
+                inMovementBetweenTiles = true;
             }
-            if (this.y < tilePath.get(indexToReach).calculatePosY()) {
-                this.y += this.speed;
-            } else if (this.y > tilePath.get(indexToReach).calculatePosY()) {
-                this.y -= this.speed;
-            }
+        }
+
+//        float distance = (float) Math.sqrt(Math.pow(player.getX() - this.x, 2) + Math.pow(player.getY() - this.y, 2));
+//        if (new HeuristicDistance().estimate(startTile, endTile) > Constants.ENEMY_SHOOTER_MINIMAL_DISTANCE_FROM_PLAYER) {
+        boolean reachedPositionX = false, reachedPositionY = false;
+        int indexToReach = tilePath.getCount() > 1 ? 1 : 0;
+        Tile nextStepTile = tilePath.get(indexToReach);
+        if (this.x + this.speed < nextStepTile.calculatePosX()) {
+            this.x += this.speed;
+        } else if (this.x - this.speed > nextStepTile.calculatePosX()) {
+            this.x -= this.speed;
+        } else {
+            this.x = nextStepTile.calculatePosX();
+            reachedPositionX = true;
+        }
+        if (this.y + this.speed < nextStepTile.calculatePosY()) {
+            this.y += this.speed;
+        } else if (this.y - this.speed > nextStepTile.calculatePosY()) {
+            this.y -= this.speed;
+        } else {
+            this.y = nextStepTile.calculatePosY();
+            reachedPositionY = true;
+        }
+        if (reachedPositionX && reachedPositionY) {
+            inMovementBetweenTiles = false;
         }
     }
 

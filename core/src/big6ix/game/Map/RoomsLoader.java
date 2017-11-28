@@ -1,4 +1,7 @@
-package big6ix.game;
+package big6ix.game.Map;
+
+import big6ix.game.TileType;
+import big6ix.game.Utility.Pair;
 
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
@@ -16,8 +19,8 @@ public class RoomsLoader {
         this.roomsDirectoryPath = roomsDirectoryPath;
     }
 
-    public ArrayList<Room> loadRoomFiles() {
-        ArrayList<Room> rooms = new ArrayList<>();
+    public ArrayList<RoomShape> loadRoomFiles() {
+        ArrayList<RoomShape> roomShapes = new ArrayList<>();
 
         try (DirectoryStream<Path> roomsFilePaths = Files.newDirectoryStream(Paths.get(roomsDirectoryPath), "*.room")) {
             for (Path currentPath : roomsFilePaths) {
@@ -28,18 +31,27 @@ public class RoomsLoader {
                 int columnsAmount = scanner.nextInt();
                 int rowsAmount = scanner.nextInt();
                 TileType[][] currentRoomArray = new TileType[rowsAmount][columnsAmount];
+                ArrayList<Pair> availableDoorsTileIndices = new ArrayList();
 
+                // Change int numbers in scanner input to TileTypes
                 for (int i = 0; i < rowsAmount; ++i) {
                     for (int j = 0; j < columnsAmount; ++j) {
                         currentRoomArray[i][j] = TileType.convertFromInt(scanner.nextInt());
                     }
                 }
-                rooms.add(new Room(currentRoomArray, columnsAmount, rowsAmount));
+
+                while (scanner.hasNextInt()) {
+                    int indexX = scanner.nextInt();
+                    int indexY = scanner.nextInt();
+                    availableDoorsTileIndices.add(new Pair(indexX, indexY));
+                }
+
+                roomShapes.add(new RoomShape(currentRoomArray, columnsAmount, rowsAmount, availableDoorsTileIndices));
             }
         } catch (IOException exception) {
             exception.printStackTrace();
         }
 
-        return rooms;
+        return roomShapes;
     }
 }

@@ -1,5 +1,7 @@
 package big6ix.game;
 
+import big6ix.game.Map.Map;
+import com.badlogic.gdx.ai.pfa.indexed.IndexedAStarPathFinder;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Array;
 
@@ -14,12 +16,14 @@ public class ManagerEnemies {
 
     private Array<Enemy> enemies;
     private Iterator<Enemy> enemiesIterator;
+    private IndexedAStarPathFinder<Tile> pathFinder;
 
     public ManagerEnemies(Player player, ManagerBullets managerBullets, Map map) {
         this.enemies = new Array<Enemy>(false, Constants.INITIAL_ENEMIES_CAPACITY);
         this.player = player;
         this.managerBullets = managerBullets;
         this.map = map;
+        this.pathFinder = new IndexedAStarPathFinder(this.map);
     }
 
     public void update() {

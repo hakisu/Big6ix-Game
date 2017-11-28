@@ -1,5 +1,6 @@
 package big6ix.game;
 
+import big6ix.game.Map.Map;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.OrthographicCamera;

@@ -47,6 +47,5 @@ public enum TileType {
 
     public boolean isWalkable() {
         return walkable;
-
     }
 }

@@ -1,5 +1,6 @@
 package big6ix.game;
 
+import big6ix.game.Map.Map;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 
 public abstract class Enemy {
@@ -9,9 +10,7 @@ public abstract class Enemy {
     protected int width;
     protected int height;
     protected float speed;
-
-    private int shootingIntervalInUpdates = 60;
-    private int updatesTimer = 0;
+    protected int health;
 
     public Enemy(float x, float y) {
         this.x = x;
@@ -36,6 +35,15 @@ public abstract class Enemy {
 
     public float getSpeed() {
         return speed;
+    }
+
+    public int getHealth() {
+
+        return health;
+    }
+
+    public void setHealth(int health) {
+        this.health = health;
     }
 
     public abstract void update(Player player, ManagerBullets managerBullets, Map map);

@@ -26,11 +26,12 @@ public final class Constants {
     public static final float BULLET_BASIC_SPEED = 17;
     public static final int BULLET_BASIC_WIDTH = 16;
     public static final int BULLET_BASIC_HEIGHT = 16;
+    public static final int BULLET_BASIC_DAMAGE = 1;
 
     // Player properties
-    public static final float PLAYER_SPEED = 6;
     public static final int PLAYER_WIDTH = 64;
     public static final int PLAYER_HEIGHT = 64;
+    public static final float PLAYER_SPEED = 6;
     public static final float PLAYER_STARTING_X = 900;
     public static final float PLAYER_STARTING_Y = 500;
     public static final float PLAYER_FRAME_DURATION = 0.1f;
@@ -38,7 +39,10 @@ public final class Constants {
     // Enemies properties
     public static final int ENEMY_SHOOTER_WIDTH = 64;
     public static final int ENEMY_SHOOTER_HEIGHT = 64;
-    public static final int ENEMY_SHOOTER_SPEED = 4;
+    public static final float ENEMY_SHOOTER_SPEED_BASE = 0.7f;
+    public static final float ENEMY_SHOOTER_SPEED_VARIATION = 0.8f;
+    public static final int ENEMY_SHOOTER_HEALTH = 3;
+    public static final int ENEMY_SHOOTER_MINIMAL_DISTANCE_FROM_PLAYER = 5;
 
     // Map properties
     public static final int MAP_ROWS_AMOUNT = 1000;

@@ -5,11 +5,13 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 public class Tile {
 
     private TileType tileType;
-    // uniqueId is used for IndexedAStarPathFinder
-    private int uniqueId;
+    // Each tile in map has unique index
+    private int index;
+    // uniqueIdForWalkableTiles is used for IndexedAStarPathFinder
+    private int uniqueIdForWalkableTiles = -1;
 
-    public Tile(int uniqueId, TileType tileType) {
-        this.uniqueId = uniqueId;
+    public Tile(int index, TileType tileType) {
+        this.index = index;
         this.tileType = tileType;
     }
 
@@ -25,15 +27,23 @@ public class Tile {
         this.tileType = tileType;
     }
 
-    public int getUniqueId() {
-        return uniqueId;
+    public int getIndex() {
+        return index;
+    }
+
+    public int getUniqueIdForWalkableTiles() {
+        return uniqueIdForWalkableTiles;
+    }
+
+    public void setUniqueIdForWalkableTiles(int uniqueIdForWalkableTiles) {
+        this.uniqueIdForWalkableTiles = uniqueIdForWalkableTiles;
     }
 
     public float calculatePosX() {
-        return (uniqueId % Constants.MAP_COLUMNS_AMOUNT) * Constants.TILE_WIDTH;
+        return (index % Constants.MAP_COLUMNS_AMOUNT) * Constants.TILE_WIDTH;
     }
 
     public float calculatePosY() {
-        return (uniqueId / Constants.MAP_COLUMNS_AMOUNT) * Constants.TILE_HEIGHT;
+        return (index / Constants.MAP_COLUMNS_AMOUNT) * Constants.TILE_HEIGHT;
     }
 }

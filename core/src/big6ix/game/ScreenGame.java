@@ -1,5 +1,6 @@
 package big6ix.game;
 
+import big6ix.game.Map.Map;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.ScreenAdapter;
@@ -12,7 +13,7 @@ public class ScreenGame extends ScreenAdapter {
     private final long ticksPerSecond = 60;
     ManagerBullets managerBullets;
     ManagerEnemies managerEnemies;
-    Player player = null;
+    Player player;
     private Map map;
     private OrthographicCamera camera;
     // Time management fields
@@ -66,7 +67,6 @@ public class ScreenGame extends ScreenAdapter {
 
     @Override
     public void dispose() {
-
     }
 
     private void updateGraphics(long timeDifference) {
@@ -90,7 +90,6 @@ public class ScreenGame extends ScreenAdapter {
 
         // Ending drawing in batch
         gameMain.batch.end();
-        System.out.println(gameMain.batch.renderCalls);
     }
 
     private void update() {

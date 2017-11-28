@@ -10,6 +10,7 @@ public abstract class Bullet {
     protected float speedX;
     protected float speedY;
     protected float speed;
+    protected int damage;
     private boolean friendly;
 
     public Bullet() {
@@ -46,6 +47,10 @@ public abstract class Bullet {
 
     public boolean isFriendly() {
         return friendly;
+    }
+
+    public int getDamage() {
+        return damage;
     }
 
     public abstract void update();
