@@ -8,6 +8,7 @@ import java.util.Map;
 public enum TileType {
     FLOOR_BASIC(0, true, GameMain.getGameAtlas().findRegion(Constants.ATLAS_MAP_FLOOR_NAME)),
     WALL_BASIC(1, false, GameMain.getGameAtlas().findRegion(Constants.ATLAS_MAP_WALL_NAME)),
+    DOOR(2, false, GameMain.getGameAtlas().findRegion(Constants.ATLAS_MAP_DOOR_NAME)),
     EMPTY(-1, false, null),
     UNKNOWN(-2, false, null);
 

@@ -11,6 +11,7 @@ public final class Constants {
     public static final String ATLAS_PLAYER_RIGHT_NAME = "player_right";
     public static final String ATLAS_MAP_WALL_NAME = "wall";
     public static final String ATLAS_MAP_FLOOR_NAME = "floor";
+    public static final String ATLAS_MAP_DOOR_NAME = "door";
 
     // Values responsible for game performance
     public static final int INITIAL_BULLETS_CAPACITY = 10000;

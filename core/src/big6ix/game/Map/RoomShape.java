@@ -30,4 +30,8 @@ public class RoomShape {
     public int getColumnsAmount() {
         return columnsAmount;
     }
+
+    public ArrayList<Pair> getAvailableDoorsTileIndices() {
+        return availableDoorsTileIndices;
+    }
 }
