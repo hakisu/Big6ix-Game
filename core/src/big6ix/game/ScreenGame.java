@@ -27,7 +27,6 @@ public class ScreenGame extends ScreenAdapter {
         this.gameMain = gameMain;
 
         map = new Map(Constants.MAP_ROWS_AMOUNT, Constants.MAP_COLUMNS_AMOUNT);
-        map.generateMap();
         player = new Player();
         managerBullets = new ManagerBullets(this.player, this.map);
         managerEnemies = new ManagerEnemies(this.player, this.managerBullets, this.map);

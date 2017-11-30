@@ -8,8 +8,7 @@ import java.util.ArrayList;
 
 public class MapCreator {
 
-    private static int currentUniqueIdForWalkableTiles = 0;
-
+    private int currentUniqueIdForWalkableTiles = 0;
     private ArrayList<RoomShape> roomShapes;
 
     public MapCreator() {

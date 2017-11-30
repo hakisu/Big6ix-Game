@@ -33,10 +33,11 @@ public class Map implements IndexedGraph<Tile> {
         mapArray = new Tile[rowsAmount][columnsAmount];
         rooms = new ArrayList<>();
         mapCreator = new MapCreator();
+        mapCreator.generateMap(mapArray, rowsAmount, columnsAmount, rooms);
         pathFinder = new IndexedAStarPathFinder<>(this);
     }
 
-    public void generateMap() {
+    private void generateMap() {
         this.mapCreator.generateMap(this.mapArray, this.rowsAmount, this.columnsAmount, this.rooms);
     }
 
@@ -73,8 +74,7 @@ public class Map implements IndexedGraph<Tile> {
 
     @Override
     public int getNodeCount() {
-        System.out.println(currentUniqueIdForWalkableTiles);
-        return currentUniqueIdForWalkableTiles;
+        return mapCreator.getCurrentUniqueIdForWalkableTiles();
     }
 
     @Override
