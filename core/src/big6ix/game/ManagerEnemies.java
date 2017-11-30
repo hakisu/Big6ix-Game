@@ -38,7 +38,8 @@ public class ManagerEnemies {
     public void render(SpriteBatch batch) {
         for (Enemy currentEnemy : enemies) {
             batch.draw(
-                    currentEnemy.getAtlasRegion(), currentEnemy.getX(), currentEnemy.getY(),
+                    currentEnemy.getCurrentTextureRegion(),
+                    currentEnemy.getX(), currentEnemy.getY(),
                     currentEnemy.getWidth(), currentEnemy.getHeight()
             );
         }

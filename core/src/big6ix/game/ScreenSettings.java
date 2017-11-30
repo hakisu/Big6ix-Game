@@ -12,6 +12,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.utils.viewport.StretchViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 
 public class ScreenSettings extends ScreenAdapter {
     private final GameMain gameMain;
@@ -23,7 +25,8 @@ public class ScreenSettings extends ScreenAdapter {
         this.gameMain = gameMain;
         atlas = new TextureAtlas("uiskin.atlas");
         skin = new Skin(Gdx.files.internal("uiskin.json"), atlas);
-        stage = new Stage();
+        Viewport stretchViewport = new StretchViewport(Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
+        stage = new Stage(stretchViewport);
     }
 
     @Override
@@ -64,8 +67,10 @@ public class ScreenSettings extends ScreenAdapter {
             public void changed(ChangeEvent event, Actor actor) {
                 if (screenSet[0] == sbSize.getSelected()) {
                     Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
+                    stage.getViewport().update(1920, 1080);
                 } else {
-                    Gdx.graphics.setWindowedMode(1920, 1080);
+                    Gdx.graphics.setWindowedMode(800, 800);
+                    stage.getViewport().update(800, 800);
                 }
 
             }
@@ -98,6 +103,7 @@ public class ScreenSettings extends ScreenAdapter {
 
         // Wyjscie do menu
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+            gameMain.screenMainMenu.updateViewPort(this.stage.getViewport());
             gameMain.setScreen(gameMain.screenMainMenu);
         }
     }

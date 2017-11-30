@@ -2,6 +2,7 @@ package big6ix.game;
 
 import big6ix.game.Map.Map;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public abstract class Enemy {
 
@@ -48,5 +49,5 @@ public abstract class Enemy {
 
     public abstract void update(Player player, ManagerBullets managerBullets, Map map);
 
-    public abstract AtlasRegion getAtlasRegion();
+    public abstract TextureRegion getCurrentTextureRegion();
 }

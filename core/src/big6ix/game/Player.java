@@ -3,6 +3,7 @@ package big6ix.game;
 import big6ix.game.Map.Map;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -24,6 +25,10 @@ public class Player {
     private Animation<TextureRegion> animationUp;
     private Animation<TextureRegion> animationRight;
 
+    private Sound stepSound;
+    private float soundLength = 0.45f;
+    private float timetoNextSound = soundLength;
+
     public Player() {
         animationDown = new Animation<TextureRegion>(Constants.PLAYER_FRAME_DURATION, GameMain.getGameAtlas().findRegions(Constants.ATLAS_PLAYER_DOWN_NAME), Animation.PlayMode.LOOP);
         animationLeft = new Animation<TextureRegion>(Constants.PLAYER_FRAME_DURATION, GameMain.getGameAtlas().findRegions(Constants.ATLAS_PLAYER_LEFT_NAME), Animation.PlayMode.LOOP);
@@ -35,6 +40,8 @@ public class Player {
         this.width = Constants.PLAYER_WIDTH;
         this.height = Constants.PLAYER_HEIGHT;
         this.speed = Constants.PLAYER_SPEED;
+
+        stepSound = Gdx.audio.newSound(Gdx.files.internal("sounds/step23.mp3"));
     }
 
     public void update(Map map) {
@@ -77,6 +84,17 @@ public class Player {
                 inMovement = true;
             }
         }
+
+        // Playing player movement sound
+        if (inMovement) {
+            timetoNextSound += Gdx.graphics.getDeltaTime();
+            if (timetoNextSound >= soundLength) {
+                stepSound.play(1f);
+            } else {
+                timetoNextSound = 0;
+            }
+        }
+
     }
 
     public void render(SpriteBatch batch, OrthographicCamera camera) {

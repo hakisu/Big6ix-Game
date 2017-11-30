@@ -31,16 +31,20 @@ public class ManagerBullets {
         bulletsIterator = bullets.iterator();
         while (bulletsIterator.hasNext()) {
             currentBullet = bulletsIterator.next();
+            boolean bulletStillExists = true;
 
-            if (checkTerrainCollision(currentBullet)) {
+            if (bulletStillExists && checkTerrainCollision(currentBullet)) {
                 bulletsIterator.remove();
+                bulletStillExists = false;
             }
-            if (checkPlayerCollision(currentBullet)) {
+            if (bulletStillExists && checkPlayerCollision(currentBullet)) {
                 System.out.println("Player hit!");
                 bulletsIterator.remove();
+                bulletStillExists = false;
             }
-            if (checkEnemyCollision(currentBullet)) {
+            if (bulletStillExists && checkEnemyCollision(currentBullet)) {
                 bulletsIterator.remove();
+                bulletStillExists = false;
             }
             currentBullet.update();
         }

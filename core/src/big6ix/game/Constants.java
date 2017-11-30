@@ -44,6 +44,7 @@ public final class Constants {
     public static final float ENEMY_SHOOTER_SPEED_VARIATION = 0.8f;
     public static final int ENEMY_SHOOTER_HEALTH = 3;
     public static final int ENEMY_SHOOTER_MINIMAL_DISTANCE_FROM_PLAYER = 5;
+    public static final float ENEMY_SHOOTER_FRAME_DURATION = 0.2f;
 
     // Map properties
     public static final int MAP_ROWS_AMOUNT = 1000;
@@ -55,6 +56,12 @@ public final class Constants {
 
     // Files properties
     public static final String ROOMS_DIRECTORY_PATH = "data/rooms";
+
+    // Display screen properties
+    public static final int SCREEN_WINDOWED_WIDTH = 800;
+    public static final int SCREEN_WINDOWED_HEIGHT = 800;
+    public static final int SCREEN_FULLSCREEN_WIDTH = 1920;
+    public static final int SCREEN_FULLSCREEN_HEIGHT = 1080;
 
     private Constants() {
     }

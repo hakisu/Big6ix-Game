@@ -3,18 +3,29 @@ package big6ix.game;
 import big6ix.game.Map.Map;
 import big6ix.game.PathFinding.HeuristicDistance;
 import big6ix.game.PathFinding.TilePath;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 import java.util.Random;
 
 public final class EnemyShooter extends Enemy {
 
-    private static TextureAtlas.AtlasRegion atlasRegion;
+    private static Animation<TextureRegion> animation;
+    private static Sound shootingSound;
 
     static {
-        atlasRegion = GameMain.getGameAtlas().findRegion(Constants.ATLAS_ENEMY_NAME);
+        animation = new Animation<TextureRegion>(
+                Constants.ENEMY_SHOOTER_FRAME_DURATION,
+                GameMain.getGameAtlas().findRegions(Constants.ATLAS_ENEMY_NAME),
+                Animation.PlayMode.LOOP
+        );
+        shootingSound = Gdx.audio.newSound(Gdx.files.internal("sounds/shoot.wav"));
     }
 
+    private TextureRegion currentFrame;
+    private float frameStateTime = 0;
     private int updatesTimer = 0;
     private int shootingIntervalInUpdates = 60;
     private TilePath tilePath;
@@ -31,6 +42,7 @@ public final class EnemyShooter extends Enemy {
     }
 
     private void shoot(Player player, ManagerBullets managerBullets) {
+        shootingSound.play(0.25f);
         Bullet bulletBasic = new BulletBasic(
                 false, Constants.BULLET_BASIC_SPEED,
                 this.x + 32, this.y + 32,
@@ -94,7 +106,10 @@ public final class EnemyShooter extends Enemy {
     }
 
     @Override
-    public TextureAtlas.AtlasRegion getAtlasRegion() {
-        return atlasRegion;
+    public TextureRegion getCurrentTextureRegion() {
+        frameStateTime += Gdx.graphics.getDeltaTime();
+        currentFrame = animation.getKeyFrame(frameStateTime, true);
+
+        return currentFrame;
     }
 }

@@ -4,6 +4,8 @@ import big6ix.game.Map.Map;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.ScreenAdapter;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector3;
@@ -22,15 +24,23 @@ public class ScreenGame extends ScreenAdapter {
     // frameTime represents time reserved for one frame in nanoseconds
     private long frameTime = 1000000000 / ticksPerSecond;
     private long updatesCount = 0;
+    private Music mainTheme;
+    private Sound shootingSound;
 
     public ScreenGame(GameMain gameMain) {
         this.gameMain = gameMain;
+        shootingSound = Gdx.audio.newSound(Gdx.files.internal("sounds/shoot.wav"));
 
         map = new Map(Constants.MAP_ROWS_AMOUNT, Constants.MAP_COLUMNS_AMOUNT);
         player = new Player();
         managerBullets = new ManagerBullets(this.player, this.map);
         managerEnemies = new ManagerEnemies(this.player, this.managerBullets, this.map);
         managerBullets.setManagerEnemies(managerEnemies);
+
+        // Music
+        mainTheme = Gdx.audio.newMusic(Gdx.files.internal("sounds/main_theme.mp3"));
+        mainTheme.setLooping(true);
+        mainTheme.setVolume(0.6f);
 
         camera = new OrthographicCamera();
         camera.setToOrtho(true, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -43,6 +53,7 @@ public class ScreenGame extends ScreenAdapter {
 
     @Override
     public void show() {
+        mainTheme.play();
         oldTime = System.nanoTime();
         System.out.println("Game screen set to active.");
     }
@@ -67,6 +78,7 @@ public class ScreenGame extends ScreenAdapter {
 
     @Override
     public void dispose() {
+        mainTheme.dispose();
     }
 
     private void updateGraphics(long timeDifference) {
@@ -100,6 +112,7 @@ public class ScreenGame extends ScreenAdapter {
 
     private void handleInput() {
         if (Gdx.input.justTouched()) {
+            shootingSound.play(0.5f);
             Vector3 mousePositionInGameWorld = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
             camera.unproject(mousePositionInGameWorld);
 
@@ -114,6 +127,7 @@ public class ScreenGame extends ScreenAdapter {
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
+            mainTheme.stop();
             gameMain.setScreen(gameMain.screenMainMenu);
         }
     }
