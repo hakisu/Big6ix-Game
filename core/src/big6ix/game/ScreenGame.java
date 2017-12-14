@@ -1,8 +1,9 @@
 package big6ix.game;
 
-import big6ix.game.Map.Map;
+import big6ix.game.map.Map;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
@@ -31,29 +32,42 @@ public class ScreenGame extends ScreenAdapter {
         this.gameMain = gameMain;
         shootingSound = Gdx.audio.newSound(Gdx.files.internal("sounds/shoot.wav"));
 
-        map = new Map(Constants.MAP_ROWS_AMOUNT, Constants.MAP_COLUMNS_AMOUNT);
-        player = new Player();
-        managerBullets = new ManagerBullets(this.player, this.map);
-        managerEnemies = new ManagerEnemies(this.player, this.managerBullets, this.map);
-        managerBullets.setManagerEnemies(managerEnemies);
+//        map = new Map();
+//        player = new Player();
+//        managerBullets = new ManagerBullets(this.player, this.map);
+//        managerEnemies = new ManagerEnemies(this.player, this.managerBullets, this.map);
+//        managerBullets.setManagerEnemies(managerEnemies);
 
         // Music
         mainTheme = Gdx.audio.newMusic(Gdx.files.internal("sounds/main_theme.mp3"));
         mainTheme.setLooping(true);
-        mainTheme.setVolume(0.6f);
+        mainTheme.setVolume(0.01f);
 
         camera = new OrthographicCamera();
         camera.setToOrtho(true, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
-        managerEnemies.addEnemy(new EnemyShooter(128, 200));
-        managerEnemies.addEnemy(new EnemyShooter(700, 1200));
-        managerEnemies.addEnemy(new EnemyShooter(1100, 700));
-        managerEnemies.addEnemy(new EnemyShooter(1520, 1100));
+//        managerEnemies.addEnemy(new EnemyShooter(128, 200));
+//        managerEnemies.addEnemy(new EnemyShooter(700, 1200));
+//        managerEnemies.addEnemy(new EnemyShooter(1100, 700));
+//        managerEnemies.addEnemy(new EnemyShooter(1520, 1100));
     }
 
     @Override
     public void show() {
+        map = new Map();
+        player = new Player();
+        managerBullets = new ManagerBullets(this.player, this.map);
+        managerEnemies = new ManagerEnemies(this.player, this.managerBullets, this.map);
+        managerBullets.setManagerEnemies(managerEnemies);
         mainTheme.play();
+        // For debugging
+        Gdx.input.setInputProcessor(new InputAdapter() {
+            @Override
+            public boolean scrolled(int amount) {
+                Constants.CAMERA_INITIAL_ZOOM += amount;
+                return true;
+            }
+        });
         oldTime = System.nanoTime();
         System.out.println("Game screen set to active.");
     }
@@ -81,6 +95,11 @@ public class ScreenGame extends ScreenAdapter {
         mainTheme.dispose();
     }
 
+    @Override
+    public void hide() {
+        Gdx.input.setInputProcessor(null);
+    }
+
     private void updateGraphics(long timeDifference) {
         // Cleaning the display with given color
         Gdx.gl.glClearColor(0, 0, 0, 1);
@@ -88,6 +107,7 @@ public class ScreenGame extends ScreenAdapter {
 
         camera.position.x = player.getX() + player.getWidth() / 2;
         camera.position.y = player.getY() + player.getWidth() / 2;
+        camera.zoom = Constants.CAMERA_INITIAL_ZOOM;
 
         camera.update();
         gameMain.batch.setProjectionMatrix(camera.combined);
@@ -108,6 +128,7 @@ public class ScreenGame extends ScreenAdapter {
         player.update(this.map);
         managerEnemies.update();
         managerBullets.update();
+        map.update();
     }
 
     private void handleInput() {

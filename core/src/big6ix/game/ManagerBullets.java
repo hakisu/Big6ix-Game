@@ -1,6 +1,6 @@
 package big6ix.game;
 
-import big6ix.game.Map.Map;
+import big6ix.game.map.Map;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Array;
 

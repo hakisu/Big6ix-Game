@@ -1,4 +1,4 @@
-package big6ix.game.PathFinding;
+package big6ix.game.pathfinding;
 
 import big6ix.game.Constants;
 import big6ix.game.Tile;

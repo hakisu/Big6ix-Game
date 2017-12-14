@@ -1,8 +1,8 @@
-package big6ix.game.Map;
+package big6ix.game.map;
 
 import big6ix.game.Constants;
 import big6ix.game.TileType;
-import big6ix.game.Utility.Pair;
+import big6ix.game.utility.Pair;
 
 import java.util.ArrayList;
 
@@ -16,6 +16,7 @@ public class Room {
 
     public Room(RoomShape roomShape) {
         this.roomShape = roomShape;
+        this.doors = new ArrayList<>();
     }
 
     public int getX() {
@@ -34,6 +35,10 @@ public class Room {
         this.y = y;
     }
 
+    public ArrayList<Pair> getDoors() {
+        return doors;
+    }
+
     public TileType[][] getRoomArray() {
         return roomShape.getRoomArray();
     }
@@ -44,6 +49,10 @@ public class Room {
 
     public int getColumnsAmount() {
         return roomShape.getColumnsAmount();
+    }
+
+    public void addDoor(Pair door) {
+        this.doors.add(door);
     }
 
     public ArrayList<Integer> calculateIndicesOfWalkableTiles() {

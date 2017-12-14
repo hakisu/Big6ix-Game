@@ -31,8 +31,11 @@ namespace MapEditor
         private int initialAmountOfRows = 10;
         private int initialAmountOfColumns = 10;
 
+        bool mouseButtonIsPressed = false;
+
         public Form1()
         {
+            listaPrzejsc = new List<Point>();
             InitializeComponent();
             tileSize = 64;
             outputPath = @"..\..\..\..\core\assets\data\rooms\";
@@ -120,9 +123,31 @@ namespace MapEditor
             podglad.Refresh();
         }
 
-        private void pictureBox1_MouseClick(object sender, MouseEventArgs e)
+        private void pictureBox1_MouseDown(object sender, MouseEventArgs e)
         {
+            mouseButtonIsPressed = true;
+        }
 
+        private void pictureBox1_MouseUp(object sender, MouseEventArgs e)
+        {
+            mouseButtonIsPressed = false;
+        }
+
+        private void pictureBox1_MouseMove(object sender, MouseEventArgs e)
+        {
+            if(mouseButtonIsPressed == true)
+            {
+                AddTile(e);
+            }
+        }
+
+        private void pictureBox1_Click(object sender, EventArgs e)
+        {
+            AddTile((MouseEventArgs) e);
+        }
+
+        private void AddTile(MouseEventArgs e)
+        {
             x = e.X / tileSize;
             y = e.Y / tileSize;
             if (x < width && y < height && podglad1 != null)
@@ -130,7 +155,6 @@ namespace MapEditor
                 if (wysokosc.Enabled == true)
                 {
                     tablicaObrazkow = new string[height, width];
-                    listaPrzejsc = new List<Point>();
                     wysokosc.Enabled = false;
                     szerokosc.Enabled = false;
                     for (int i = 0; i < height; i++)
@@ -150,21 +174,20 @@ namespace MapEditor
                         tablicaObrazkow[y, x] = entry.Value.ToString();
                 }
 
-
                 if (checkBox1.Checked)
                 {
                     g.DrawEllipse(new Pen(Color.Red, 3), rect.X + 5, rect.Y + 5, 5, 5);
-                    listaPrzejsc.Add(new Point(x, y));
+                    if(!listaPrzejsc.Contains(new Point(x, y)))
+                    {
+                        listaPrzejsc.Add(new Point(x, y));
+                    }
                 }
                 else if (!checkBox1.Checked && listaPrzejsc.Contains(new Point(x, y)))
                 {
                     listaPrzejsc.Remove(new Point(x, y));
                 }
                 pictureBox1.Refresh();
-
-
             }
-
         }
 
         private void zapisz_btn_Click(object sender, EventArgs e)

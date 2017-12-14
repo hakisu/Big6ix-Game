@@ -43,6 +43,8 @@ public class ScreenMainMenu extends ScreenAdapter {
 
     @Override
     public void show() {
+        System.out.println("ScreenMainMenu Show.");
+
         intro.play();
         Gdx.input.setInputProcessor(stage);
 

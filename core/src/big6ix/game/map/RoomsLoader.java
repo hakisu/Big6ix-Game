@@ -1,7 +1,7 @@
-package big6ix.game.Map;
+package big6ix.game.map;
 
 import big6ix.game.TileType;
-import big6ix.game.Utility.Pair;
+import big6ix.game.utility.Pair;
 
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
@@ -44,6 +44,10 @@ public class RoomsLoader {
                     int indexX = scanner.nextInt();
                     int indexY = scanner.nextInt();
                     availableDoorsTileIndices.add(new Pair(indexX, indexY));
+                }
+
+                if (availableDoorsTileIndices.size() == 0) {
+                    throw new DoorNotFoundException("Each RoomShape has to have at least 1 available door!(");
                 }
 
                 roomShapes.add(new RoomShape(currentRoomArray, columnsAmount, rowsAmount, availableDoorsTileIndices));

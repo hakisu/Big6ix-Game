@@ -1,6 +1,6 @@
 package big6ix.game;
 
-import big6ix.game.Map.Map;
+import big6ix.game.map.Map;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.audio.Sound;
@@ -26,7 +26,7 @@ public class Player {
     private Animation<TextureRegion> animationRight;
 
     private Sound stepSound;
-    private float soundLength = 0.45f;
+    private float soundLength = 0.25f;
     private float timetoNextSound = soundLength;
 
     public Player() {
@@ -35,8 +35,8 @@ public class Player {
         animationUp = new Animation<TextureRegion>(Constants.PLAYER_FRAME_DURATION, GameMain.getGameAtlas().findRegions(Constants.ATLAS_PLAYER_UP_NAME), Animation.PlayMode.LOOP);
         animationRight = new Animation<TextureRegion>(Constants.PLAYER_FRAME_DURATION, GameMain.getGameAtlas().findRegions(Constants.ATLAS_PLAYER_RIGHT_NAME), Animation.PlayMode.LOOP);
 
-        this.x = Constants.PLAYER_STARTING_X;
-        this.y = Constants.PLAYER_STARTING_Y;
+        this.x = 64;
+        this.y = 64;
         this.width = Constants.PLAYER_WIDTH;
         this.height = Constants.PLAYER_HEIGHT;
         this.speed = Constants.PLAYER_SPEED;
@@ -50,51 +50,65 @@ public class Player {
         // inMovement is used to determine if running animation should be used for player
         inMovement = false;
 
-        if (Gdx.input.isKeyPressed(Input.Keys.W)) {
-            if ((!map.getMapArray()[tileIndexY = (int) (y - speed) / map.getTileHeight()][tileIndexX = (int) x / map.getTileWidth()].isWalkable())
-                    || (!map.getMapArray()[tileIndexY = (int) (y - speed) / map.getTileHeight()][tileIndexX = (int) (x + width) / map.getTileWidth()].isWalkable())) {
-                y = tileIndexY * map.getTileHeight() + (map.getTileHeight() + 1);
-            } else {
-                y -= speed;
-                inMovement = true;
-            }
-        } else if (Gdx.input.isKeyPressed(Input.Keys.S)) {
-            if ((!map.getMapArray()[tileIndexY = (int) (y + speed + height) / map.getTileHeight()][tileIndexX = (int) x / map.getTileWidth()].isWalkable())
-                    || (!map.getMapArray()[tileIndexY = (int) (y + speed + height) / map.getTileHeight()][tileIndexX = (int) (x + width) / map.getTileWidth()].isWalkable())) {
-                y = tileIndexY * map.getTileHeight() - (height + 1);
-            } else {
-                y += speed;
-                inMovement = true;
-            }
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.D)) {
-            if ((!map.getMapArray()[tileIndexY = (int) y / map.getTileHeight()][tileIndexX = (int) (x + speed + width) / map.getTileWidth()].isWalkable())
-                    || (!map.getMapArray()[tileIndexY = (int) (y + height) / map.getTileHeight()][tileIndexX = (int) (x + speed + width) / map.getTileWidth()].isWalkable())) {
-                x = tileIndexX * map.getTileWidth() - (width + 1);
-            } else {
-                x += speed;
-                inMovement = true;
-            }
-        } else if (Gdx.input.isKeyPressed(Input.Keys.A)) {
-            if ((!map.getMapArray()[tileIndexY = (int) y / map.getTileHeight()][tileIndexX = (int) (x - speed) / map.getTileWidth()].isWalkable())
-                    || (!map.getMapArray()[tileIndexY = (int) (y + height) / map.getTileHeight()][tileIndexX = (int) (x - speed) / map.getTileWidth()].isWalkable())) {
-                x = tileIndexX * map.getTileWidth() + (map.getTileWidth() + 1);
-            } else {
-                x -= speed;
-                inMovement = true;
-            }
-        }
+        debugMove();
+
+//        if (Gdx.input.isKeyPressed(Input.Keys.W)) {
+//            if ((!map.getMapArray()[tileIndexY = (int) (y - speed) / map.getTileHeight()][tileIndexX = (int) x / map.getTileWidth()].isWalkable())
+//                    || (!map.getMapArray()[tileIndexY = (int) (y - speed) / map.getTileHeight()][tileIndexX = (int) (x + width) / map.getTileWidth()].isWalkable())) {
+//                y = tileIndexY * map.getTileHeight() + (map.getTileHeight() + 1);
+//            } else {
+//                y -= speed;
+//                inMovement = true;
+//            }
+//        } else if (Gdx.input.isKeyPressed(Input.Keys.S)) {
+//            if ((!map.getMapArray()[tileIndexY = (int) (y + speed + height) / map.getTileHeight()][tileIndexX = (int) x / map.getTileWidth()].isWalkable())
+//                    || (!map.getMapArray()[tileIndexY = (int) (y + speed + height) / map.getTileHeight()][tileIndexX = (int) (x + width) / map.getTileWidth()].isWalkable())) {
+//                y = tileIndexY * map.getTileHeight() - (height + 1);
+//            } else {
+//                y += speed;
+//                inMovement = true;
+//            }
+//        }
+//        if (Gdx.input.isKeyPressed(Input.Keys.D)) {
+//            if ((!map.getMapArray()[tileIndexY = (int) y / map.getTileHeight()][tileIndexX = (int) (x + speed + width) / map.getTileWidth()].isWalkable())
+//                    || (!map.getMapArray()[tileIndexY = (int) (y + height) / map.getTileHeight()][tileIndexX = (int) (x + speed + width) / map.getTileWidth()].isWalkable())) {
+//                x = tileIndexX * map.getTileWidth() - (width + 1);
+//            } else {
+//                x += speed;
+//                inMovement = true;
+//            }
+//        } else if (Gdx.input.isKeyPressed(Input.Keys.A)) {
+//            if ((!map.getMapArray()[tileIndexY = (int) y / map.getTileHeight()][tileIndexX = (int) (x - speed) / map.getTileWidth()].isWalkable())
+//                    || (!map.getMapArray()[tileIndexY = (int) (y + height) / map.getTileHeight()][tileIndexX = (int) (x - speed) / map.getTileWidth()].isWalkable())) {
+//                x = tileIndexX * map.getTileWidth() + (map.getTileWidth() + 1);
+//            } else {
+//                x -= speed;
+//                inMovement = true;
+//            }
+//        }
 
         // Playing player movement sound
+        timetoNextSound += Gdx.graphics.getDeltaTime();
         if (inMovement) {
-            timetoNextSound += Gdx.graphics.getDeltaTime();
             if (timetoNextSound >= soundLength) {
-                stepSound.play(1f);
-            } else {
+                stepSound.play(1);
                 timetoNextSound = 0;
             }
         }
+    }
 
+    private void debugMove() {
+        int speedMultiplier = 20;
+        if (Gdx.input.isKeyPressed(Input.Keys.W)) {
+            y -= speed * speedMultiplier;
+        } else if (Gdx.input.isKeyPressed(Input.Keys.S)) {
+            y += speed * speedMultiplier;
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.A)) {
+            x -= speed * speedMultiplier;
+        } else if (Gdx.input.isKeyPressed(Input.Keys.D)) {
+            x += speed * speedMultiplier;
+        }
     }
 
     public void render(SpriteBatch batch, OrthographicCamera camera) {

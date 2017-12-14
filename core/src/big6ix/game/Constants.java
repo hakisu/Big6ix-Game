@@ -11,6 +11,7 @@ public final class Constants {
     public static final String ATLAS_PLAYER_RIGHT_NAME = "player_right";
     public static final String ATLAS_MAP_WALL_NAME = "wall";
     public static final String ATLAS_MAP_FLOOR_NAME = "floor";
+    public static final String ATLAS_MAP_FLOOR_WHITE_NAME = "floor_white";
     public static final String ATLAS_MAP_DOOR_NAME = "door";
 
     // Values responsible for game performance
@@ -33,8 +34,6 @@ public final class Constants {
     public static final int PLAYER_WIDTH = 64;
     public static final int PLAYER_HEIGHT = 64;
     public static final float PLAYER_SPEED = 6;
-    public static final float PLAYER_STARTING_X = 900;
-    public static final float PLAYER_STARTING_Y = 500;
     public static final float PLAYER_FRAME_DURATION = 0.1f;
 
     // Enemies properties
@@ -46,7 +45,7 @@ public final class Constants {
     public static final int ENEMY_SHOOTER_MINIMAL_DISTANCE_FROM_PLAYER = 5;
     public static final float ENEMY_SHOOTER_FRAME_DURATION = 0.2f;
 
-    // Map properties
+    // map properties
     public static final int MAP_ROWS_AMOUNT = 1000;
     public static final int MAP_COLUMNS_AMOUNT = 1000;
 
@@ -62,6 +61,9 @@ public final class Constants {
     public static final int SCREEN_WINDOWED_HEIGHT = 800;
     public static final int SCREEN_FULLSCREEN_WIDTH = 1920;
     public static final int SCREEN_FULLSCREEN_HEIGHT = 1080;
+
+    // Camera properties
+    public static float CAMERA_INITIAL_ZOOM = 5;
 
     private Constants() {
     }

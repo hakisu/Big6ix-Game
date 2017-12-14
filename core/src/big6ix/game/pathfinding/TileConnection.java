@@ -1,4 +1,4 @@
-package big6ix.game.PathFinding;
+package big6ix.game.pathfinding;
 
 import big6ix.game.Tile;
 import com.badlogic.gdx.ai.pfa.DefaultConnection;
