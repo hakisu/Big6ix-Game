@@ -1,12 +1,13 @@
 package big6ix.game.map;
 
 import big6ix.game.Constants;
+import big6ix.game.ManagerEnemies;
+import big6ix.game.Player;
 import big6ix.game.Tile;
-import big6ix.game.TileType;
 import big6ix.game.pathfinding.HeuristicDistance;
 import big6ix.game.pathfinding.TileConnection;
 import big6ix.game.pathfinding.TilePath;
-import big6ix.game.utility.Pair;
+import big6ix.game.utility.Utilities;
 import com.badlogic.gdx.ai.pfa.Connection;
 import com.badlogic.gdx.ai.pfa.indexed.IndexedAStarPathFinder;
 import com.badlogic.gdx.ai.pfa.indexed.IndexedGraph;
@@ -16,6 +17,7 @@ import com.badlogic.gdx.utils.Array;
 public class Map implements IndexedGraph<Tile> {
 
     private MapData mapData;
+    private MapState mapState;
     private MapCreator mapCreator;
     private IndexedAStarPathFinder<Tile> pathFinder;
     private int tileWidth;
@@ -27,6 +29,7 @@ public class Map implements IndexedGraph<Tile> {
 
         mapCreator = new MapCreator();
         mapData = mapCreator.generateMapData();
+        mapState = new MapState(mapData);
         pathFinder = new IndexedAStarPathFinder<>(this);
     }
 
@@ -60,12 +63,14 @@ public class Map implements IndexedGraph<Tile> {
         }
     }
 
-    public void update() {
-        for (Room currentRoom : mapData.getRooms()) {
-            for (Pair currentDoorIndices : currentRoom.getDoors()) {
-                mapData.getMapArray()[currentDoorIndices.getIndexY() + currentRoom.getY()][currentDoorIndices.getIndexX() + currentRoom.getX()].setTileType(TileType.DOOR);
-            }
-        }
+    public void update(ManagerEnemies managerEnemies, Player player) {
+        mapState.update(managerEnemies, player);
+    }
+
+    public Room getRandomRoom() {
+        int randomPositionInListOfRooms = Utilities.generateRandomInt(0, mapData.getRooms().size() - 1);
+
+        return mapData.getRooms().get(randomPositionInListOfRooms);
     }
 
     public boolean searchPath(Tile startTile, Tile endTile, HeuristicDistance heuristicDistance, TilePath outPath) {
@@ -86,8 +91,8 @@ public class Map implements IndexedGraph<Tile> {
     public Array<Connection<Tile>> getConnections(Tile fromNode) {
         Array<Connection<Tile>> connections = new Array<>();
 
-        int tileIndexX = fromNode.getIndex() % Constants.MAP_COLUMNS_AMOUNT;
-        int tileIndexY = fromNode.getIndex() / Constants.MAP_COLUMNS_AMOUNT;
+        int tileIndexX = fromNode.getIndex() % getColumnsAmount();
+        int tileIndexY = fromNode.getIndex() / getColumnsAmount();
 
         // Return all possible connections from given Tile based on the status of "walkable" variables of its neighbours
         if (getMapArray()[tileIndexY][tileIndexX].isWalkable()) {

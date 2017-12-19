@@ -1,5 +1,6 @@
 package big6ix.game;
 
+import big6ix.game.map.Map;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 
 public class Tile {
@@ -39,11 +40,11 @@ public class Tile {
         this.uniqueIdForWalkableTiles = uniqueIdForWalkableTiles;
     }
 
-    public float calculatePosX() {
-        return (index % Constants.MAP_COLUMNS_AMOUNT) * Constants.TILE_WIDTH;
+    public float calculatePosX(Map map) {
+        return (index % map.getColumnsAmount()) * map.getTileWidth();
     }
 
-    public float calculatePosY() {
-        return (index / Constants.MAP_COLUMNS_AMOUNT) * Constants.TILE_HEIGHT;
+    public float calculatePosY(Map map) {
+        return (index / map.getColumnsAmount()) * map.getTileHeight();
     }
 }

@@ -37,7 +37,7 @@ public class MapCreator {
     }
 
     private TreeNode createMapTemplate() {
-        int amountOfRoomsToCreate = 1000;
+        int amountOfRoomsToCreate = 400;
 
         RoomShape currentRoomShape = getRandomRoomShape();
         Rectangle area = new Rectangle(
@@ -213,6 +213,8 @@ public class MapCreator {
 
             for (Pair currentDoor : currentTreeNode.createDoorsList()) {
                 room.addDoor(currentDoor);
+                // Change wall that is marked as connecting door to TileType FLOOR_BASIC_0
+                mapArray[room.getY() + currentDoor.getIndexY()][room.getX() + currentDoor.getIndexX()].setTileType(TileType.FLOOR_BASIC_0);
             }
             rooms.add(room);
         }

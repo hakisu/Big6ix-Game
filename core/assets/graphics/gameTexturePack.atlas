@@ -67,28 +67,28 @@ door
   orig: 64, 64
   offset: 0, 0
   index: -1
-floor
+floor0
   rotate: false
   xy: 134, 398
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
-floor2
+floor1
   rotate: false
   xy: 200, 464
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
-floor3
+floor2
   rotate: false
   xy: 2, 200
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
-floor4
+floor3
   rotate: false
   xy: 68, 266
   size: 64, 64

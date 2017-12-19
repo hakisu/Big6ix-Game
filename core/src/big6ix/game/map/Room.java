@@ -1,10 +1,11 @@
 package big6ix.game.map;
 
-import big6ix.game.Constants;
 import big6ix.game.TileType;
 import big6ix.game.utility.Pair;
+import big6ix.game.utility.Utilities;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Room {
 
@@ -55,16 +56,23 @@ public class Room {
         this.doors.add(door);
     }
 
-    public ArrayList<Integer> calculateIndicesOfWalkableTiles() {
-        ArrayList<Integer> walkableTilesIndices = new ArrayList<>();
+    public ArrayList<Pair> calculateIndicesOfWalkableTiles() {
+        ArrayList<Pair> walkableTilesIndices = new ArrayList<>();
         for (int i = 0; i < roomShape.getRowsAmount(); ++i) {
             for (int j = 0; j < roomShape.getColumnsAmount(); ++j) {
                 if (roomShape.getRoomArray()[i][j].isWalkable()) {
-                    walkableTilesIndices.add((i + y) * Constants.MAP_COLUMNS_AMOUNT + (j + x));
+                    walkableTilesIndices.add(new Pair(j + x, i + y));
                 }
             }
         }
 
         return walkableTilesIndices;
+    }
+
+    public Pair getRandomWalkableTileIndices() {
+        List<Pair> walkableTilesIndices = calculateIndicesOfWalkableTiles();
+        int randomPositionInListOfWalkableTiles = Utilities.generateRandomInt(0, walkableTilesIndices.size() - 1);
+
+        return walkableTilesIndices.get(randomPositionInListOfWalkableTiles);
     }
 }

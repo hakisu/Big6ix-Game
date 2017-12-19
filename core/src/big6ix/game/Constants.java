@@ -10,7 +10,10 @@ public final class Constants {
     public static final String ATLAS_PLAYER_UP_NAME = "player_up";
     public static final String ATLAS_PLAYER_RIGHT_NAME = "player_right";
     public static final String ATLAS_MAP_WALL_NAME = "wall";
-    public static final String ATLAS_MAP_FLOOR_NAME = "floor";
+    public static final String ATLAS_MAP_FLOOR_NAME_0 = "floor0";
+    public static final String ATLAS_MAP_FLOOR_NAME_1 = "floor1";
+    public static final String ATLAS_MAP_FLOOR_NAME_2 = "floor2";
+    public static final String ATLAS_MAP_FLOOR_NAME_3 = "floor3";
     public static final String ATLAS_MAP_FLOOR_WHITE_NAME = "floor_white";
     public static final String ATLAS_MAP_DOOR_NAME = "door";
 
@@ -31,9 +34,6 @@ public final class Constants {
     public static final int BULLET_BASIC_DAMAGE = 1;
 
     // Player properties
-    public static final int PLAYER_WIDTH = 64;
-    public static final int PLAYER_HEIGHT = 64;
-    public static final float PLAYER_SPEED = 6;
     public static final float PLAYER_FRAME_DURATION = 0.1f;
 
     // Enemies properties
@@ -44,10 +44,6 @@ public final class Constants {
     public static final int ENEMY_SHOOTER_HEALTH = 3;
     public static final int ENEMY_SHOOTER_MINIMAL_DISTANCE_FROM_PLAYER = 5;
     public static final float ENEMY_SHOOTER_FRAME_DURATION = 0.2f;
-
-    // map properties
-    public static final int MAP_ROWS_AMOUNT = 1000;
-    public static final int MAP_COLUMNS_AMOUNT = 1000;
 
     // Tiles properties
     public static final int TILE_WIDTH = 64;

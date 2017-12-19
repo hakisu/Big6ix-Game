@@ -49,7 +49,15 @@ public class ManagerEnemies {
         this.enemies.add(enemy);
     }
 
+    private void removeDeadEnemy(Enemy enemy) {
+
+    }
+
     public Iterator<Enemy> getCurrentIteratorForEnemiesArray() {
         return enemies.iterator();
+    }
+
+    public int getNumberOfAllEnemies() {
+        return enemies.size;
     }
 }

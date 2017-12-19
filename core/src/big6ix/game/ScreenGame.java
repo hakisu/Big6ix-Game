@@ -1,6 +1,8 @@
 package big6ix.game;
 
 import big6ix.game.map.Map;
+import big6ix.game.map.Room;
+import big6ix.game.utility.Pair;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
@@ -55,7 +57,9 @@ public class ScreenGame extends ScreenAdapter {
     @Override
     public void show() {
         map = new Map();
-        player = new Player();
+        Room roomForPlayerSpawn = map.getRandomRoom();
+        Pair tileIndicesForPlayerSpawn = roomForPlayerSpawn.getRandomWalkableTileIndices();
+        player = new Player(tileIndicesForPlayerSpawn.getIndexX(), tileIndicesForPlayerSpawn.getIndexY());
         managerBullets = new ManagerBullets(this.player, this.map);
         managerEnemies = new ManagerEnemies(this.player, this.managerBullets, this.map);
         managerBullets.setManagerEnemies(managerEnemies);
@@ -128,7 +132,7 @@ public class ScreenGame extends ScreenAdapter {
         player.update(this.map);
         managerEnemies.update();
         managerBullets.update();
-        map.update();
+        map.update(managerEnemies, player);
     }
 
     private void handleInput() {

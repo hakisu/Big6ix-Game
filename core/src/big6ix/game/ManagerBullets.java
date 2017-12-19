@@ -48,8 +48,6 @@ public class ManagerBullets {
             }
             currentBullet.update();
         }
-
-
     }
 
     public void render(SpriteBatch batch) {
