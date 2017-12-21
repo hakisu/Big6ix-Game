@@ -37,7 +37,7 @@ public class MapCreator {
     }
 
     private TreeNode createMapTemplate() {
-        int amountOfRoomsToCreate = 400;
+        int amountOfRoomsToCreate = 5;
 
         RoomShape currentRoomShape = getRandomRoomShape();
         Rectangle area = new Rectangle(

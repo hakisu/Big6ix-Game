@@ -5,10 +5,6 @@ public final class Constants {
     // AtlasRegion names
     public static final String ATLAS_BULLET_BASIC_NAME = "bullet";
     public static final String ATLAS_ENEMY_NAME = "enemy";
-    public static final String ATLAS_PLAYER_DOWN_NAME = "player_down";
-    public static final String ATLAS_PLAYER_LEFT_NAME = "player_left";
-    public static final String ATLAS_PLAYER_UP_NAME = "player_up";
-    public static final String ATLAS_PLAYER_RIGHT_NAME = "player_right";
     public static final String ATLAS_MAP_WALL_NAME = "wall";
     public static final String ATLAS_MAP_FLOOR_NAME_0 = "floor0";
     public static final String ATLAS_MAP_FLOOR_NAME_1 = "floor1";

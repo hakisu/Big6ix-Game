@@ -13,6 +13,7 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFont
 public class GameMain extends Game {
 
     private static TextureAtlas gameAtlas;
+
     // Game screens
     ScreenGame screenGame;
     ScreenMainMenu screenMainMenu;
@@ -32,7 +33,7 @@ public class GameMain extends Game {
 
         FreeTypeFontGenerator fontGenerator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/OpenSans-Regular.ttf"));
         FreeTypeFontParameter fontParameter = new FreeTypeFontParameter();
-        fontParameter.size = 64;
+        fontParameter.size = 50;
         fontParameter.flip = false;
         font = fontGenerator.generateFont(fontParameter);
         fontGenerator.dispose();

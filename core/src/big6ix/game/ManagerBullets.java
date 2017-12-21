@@ -1,5 +1,6 @@
 package big6ix.game;
 
+import big6ix.game.enemies.Enemy;
 import big6ix.game.map.Map;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Array;
@@ -37,8 +38,9 @@ public class ManagerBullets {
                 bulletsIterator.remove();
                 bulletStillExists = false;
             }
+            // Performs action after Bullet hits player
             if (bulletStillExists && checkPlayerCollision(currentBullet)) {
-                System.out.println("Player hit!");
+                player.receiveDamage(1);
                 bulletsIterator.remove();
                 bulletStillExists = false;
             }
@@ -88,10 +90,7 @@ public class ManagerBullets {
                 float distance = (float) Math.sqrt(distanceX * distanceX + distanceY * distanceY);
                 // Check if there is collision between bullet and specific enemy
                 if (distance <= (bullet.getWidth() / 2 + currentEnemy.getWidth() / 2)) {
-                    currentEnemy.setHealth(currentEnemy.getHealth() - bullet.damage);
-                    if (currentEnemy.getHealth() <= 0) {
-                        enemiesIterator.remove();
-                    }
+                    currentEnemy.setHealth(currentEnemy.getHealth() - bullet.getDamagePower());
                     return true;
                 }
             }

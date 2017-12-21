@@ -1,5 +1,6 @@
 package big6ix.game;
 
+import big6ix.game.enemies.Enemy;
 import big6ix.game.map.Map;
 import com.badlogic.gdx.ai.pfa.indexed.IndexedAStarPathFinder;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -32,6 +33,7 @@ public class ManagerEnemies {
         while (enemiesIterator.hasNext()) {
             currentEnemy = enemiesIterator.next();
             currentEnemy.update(player, managerBullets, map);
+            removeDeadEnemy(currentEnemy);
         }
     }
 
@@ -50,7 +52,9 @@ public class ManagerEnemies {
     }
 
     private void removeDeadEnemy(Enemy enemy) {
-
+        if (enemy.getHealth() <= 0) {
+            enemiesIterator.remove();
+        }
     }
 
     public Iterator<Enemy> getCurrentIteratorForEnemiesArray() {

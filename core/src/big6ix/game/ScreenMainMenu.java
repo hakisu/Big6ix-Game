@@ -4,7 +4,9 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -20,14 +22,19 @@ public class ScreenMainMenu extends ScreenAdapter {
     private final GameMain gameMain;
     private Stage stage;
     private Skin skin;
-    private TextureAtlas atlas;
     private Music intro;
 
-    public ScreenMainMenu(final GameMain game) {
-        this.gameMain = game;
+    public ScreenMainMenu(final GameMain gameMain) {
+        this.gameMain = gameMain;
 
-        atlas = new TextureAtlas("uiskin.atlas");
-        skin = new Skin(Gdx.files.internal("uiskin.json"), atlas);
+
+        skin = new Skin();
+        skin.add("default-font", this.gameMain.font, BitmapFont.class);
+        FileHandle fileHandle = Gdx.files.internal("skins/skin.json");
+        FileHandle atlasFile = Gdx.files.internal("skins/skin.atlas");
+        skin.addRegions(new TextureAtlas(atlasFile));
+        skin.load(fileHandle);
+
         Viewport stretchViewPort = new StretchViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         stage = new Stage(stretchViewPort);
 
@@ -53,13 +60,9 @@ public class ScreenMainMenu extends ScreenAdapter {
 
         mainTable.center();
 
-
         TextButton playButton = new TextButton("Play", skin);
         TextButton optionsButton = new TextButton("Options", skin);
         TextButton exitButton = new TextButton("Exit", skin);
-        playButton.getLabel().setFontScale(3, 3);
-        optionsButton.getLabel().setFontScale(3, 3);
-        exitButton.getLabel().setFontScale(3, 3);
 
         // Manage inputs
         playButton.addListener(new ClickListener() {
@@ -114,8 +117,6 @@ public class ScreenMainMenu extends ScreenAdapter {
     @Override
     public void dispose() {
         intro.dispose();
-        skin.dispose();
-        atlas.dispose();
         stage.dispose();
     }
 }

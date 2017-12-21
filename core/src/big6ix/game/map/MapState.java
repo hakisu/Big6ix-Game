@@ -1,11 +1,17 @@
 package big6ix.game.map;
 
-import big6ix.game.*;
+import big6ix.game.Constants;
+import big6ix.game.ManagerEnemies;
+import big6ix.game.Player;
+import big6ix.game.TileType;
+import big6ix.game.enemies.EnemyShooter;
 import big6ix.game.utility.Pair;
 
 import java.util.List;
 
 public class MapState {
+
+    private final int DISTANCE_FOR_DOOR_CLOSING = 2;
 
     private boolean inFight;
     private MapData mapData;
@@ -29,7 +35,7 @@ public class MapState {
                 inFight = false;
             }
         } else {
-            calculateCurrentOccupiedRoom(player);
+            calculateAndChangeCurrentOccupiedRoom(player);
             if (roomsCompletionStatuses[currentOccupiedRoomIndex] == false) {
                 closeDoors();
                 inFight = true;
@@ -56,7 +62,7 @@ public class MapState {
         }
     }
 
-    private void calculateCurrentOccupiedRoom(Player player) {
+    private void calculateAndChangeCurrentOccupiedRoom(Player player) {
         int playerIndexX = player.calculateIndexX();
         int playerIndexY = player.calculateIndexY();
 
@@ -72,10 +78,15 @@ public class MapState {
                     && (this.currentOccupiedRoom != currentRoom)) {
 
                 Pair closestDoorToPlayer = calculateClosestDoorToPlayer(player, currentRoom);
-                if (playerIndexX != (closestDoorToPlayer.getIndexX() + positionX) || (playerIndexY != closestDoorToPlayer.getIndexY() + positionY)) {
-                    this.currentOccupiedRoom = currentRoom;
-                    this.currentOccupiedRoomIndex = currentRoomIndex;
-                    return;
+                int doorMapPositionX = closestDoorToPlayer.getIndexX() + positionX;
+                int doorMapPositionY = closestDoorToPlayer.getIndexY() + positionY;
+                if (playerIndexX != doorMapPositionX || playerIndexY != doorMapPositionY) {
+                    int distanceToDoor = calculateDistanceBetweenPositions(new Pair(playerIndexX, playerIndexY), new Pair(doorMapPositionX, doorMapPositionY));
+                    if (distanceToDoor >= DISTANCE_FOR_DOOR_CLOSING) {
+                        this.currentOccupiedRoom = currentRoom;
+                        this.currentOccupiedRoomIndex = currentRoomIndex;
+                        return;
+                    }
                 }
             }
             currentRoomIndex++;
@@ -101,5 +112,12 @@ public class MapState {
         }
 
         return currentClosestDoor;
+    }
+
+    private int calculateDistanceBetweenPositions(Pair position1, Pair position2) {
+        int distanceHorizontal = Math.abs(position1.getIndexX() - position2.getIndexX());
+        int distanceVertical = Math.abs(position1.getIndexY() - position2.getIndexY());
+
+        return distanceHorizontal + distanceVertical;
     }
 }

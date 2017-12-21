@@ -129,9 +129,9 @@ public class ScreenGame extends ScreenAdapter {
     }
 
     private void update() {
-        player.update(this.map);
-        managerEnemies.update();
+        player.update(this.map, gameMain);
         managerBullets.update();
+        managerEnemies.update();
         map.update(managerEnemies, player);
     }
 
@@ -142,7 +142,7 @@ public class ScreenGame extends ScreenAdapter {
             camera.unproject(mousePositionInGameWorld);
 
             BulletBasic bulletBasic = new BulletBasic(
-                    true, Constants.BULLET_BASIC_SPEED,
+                    true,
                     player.getX() + player.getWidth() / 2 - Constants.BULLET_BASIC_WIDTH / 2,
                     player.getY() + player.getHeight() / 2 - Constants.BULLET_BASIC_HEIGHT / 2,
                     mousePositionInGameWorld.x - Constants.BULLET_BASIC_WIDTH / 2,

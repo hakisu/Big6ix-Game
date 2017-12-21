@@ -3,6 +3,7 @@ package big6ix.game;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 
 public abstract class Bullet {
+
     protected float x;
     protected float y;
     protected int width;
@@ -10,11 +11,8 @@ public abstract class Bullet {
     protected float speedX;
     protected float speedY;
     protected float speed;
-    protected int damage;
+    protected int damagePower;
     private boolean friendly;
-
-    public Bullet() {
-    }
 
     public Bullet(boolean friendly, float speed) {
         this.friendly = friendly;
@@ -25,8 +23,16 @@ public abstract class Bullet {
         return x;
     }
 
+    public void setX(float x) {
+        this.x = x;
+    }
+
     public float getY() {
         return y;
+    }
+
+    public void setY(float y) {
+        this.y = y;
     }
 
     public int getWidth() {
@@ -37,25 +43,14 @@ public abstract class Bullet {
         return height;
     }
 
-    public void setX(float x) {
-        this.x = x;
-    }
-
-    public void setY(float y) {
-        this.y = y;
-    }
-
     public boolean isFriendly() {
         return friendly;
     }
 
-    public int getDamage() {
-        return damage;
+    public int getDamagePower() {
+        return damagePower;
     }
 
     public abstract void update();
-
     public abstract AtlasRegion getAtlasRegion();
-
-    public abstract Bullet clone();
 }

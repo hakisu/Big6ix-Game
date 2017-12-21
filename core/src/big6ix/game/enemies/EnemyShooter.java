@@ -1,5 +1,7 @@
-package big6ix.game;
+package big6ix.game.enemies;
 
+import big6ix.game.*;
+import big6ix.game.enemies.Enemy;
 import big6ix.game.map.Map;
 import big6ix.game.pathfinding.HeuristicDistance;
 import big6ix.game.pathfinding.TilePath;
@@ -44,7 +46,7 @@ public final class EnemyShooter extends Enemy {
     private void shoot(Player player, ManagerBullets managerBullets) {
         shootingSound.play(0.15f);
         Bullet bulletBasic = new BulletBasic(
-                false, Constants.BULLET_BASIC_SPEED,
+                false,
                 this.x + 32, this.y + 32,
                 player.getX() + 32, player.getY() + 32
         );
@@ -70,7 +72,6 @@ public final class EnemyShooter extends Enemy {
             // Find new path for this entity and hold it in tilePath
             tilePath.clear();
             boolean pathFound = map.searchPath(startTile, endTile, new HeuristicDistance(map), tilePath);
-            System.out.println(tilePath.getCount());
 
             // If there is no path from enemy to player location finish this update
             if (pathFound == false) {

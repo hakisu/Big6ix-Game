@@ -3,7 +3,9 @@ package big6ix.game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.ScreenAdapter;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -16,16 +18,22 @@ import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 public class ScreenSettings extends ScreenAdapter {
+
     private final GameMain gameMain;
     private final Skin skin;
     private Stage stage;
-    private TextureAtlas atlas;
 
     public ScreenSettings(GameMain gameMain) {
         this.gameMain = gameMain;
-        atlas = new TextureAtlas("uiskin.atlas");
-        skin = new Skin(Gdx.files.internal("uiskin.json"), atlas);
-        Viewport stretchViewport = new StretchViewport(Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
+
+        skin = new Skin();
+        skin.add("default-font", this.gameMain.font, BitmapFont.class);
+        FileHandle fileHandle = Gdx.files.internal("skins/skin.json");
+        FileHandle atlasFile = Gdx.files.internal("skins/skin.atlas");
+        skin.addRegions(new TextureAtlas(atlasFile));
+        skin.load(fileHandle);
+
+        Viewport stretchViewport = new StretchViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         stage = new Stage(stretchViewport);
     }
 
@@ -48,9 +56,7 @@ public class ScreenSettings extends ScreenAdapter {
         sbVsync.setItems(vsyncSet);
 
         Label screenSizeLabel = new Label("Screen size ", skin);
-        screenSizeLabel.setFontScale(2, 2);
         Label vSyncLabel = new Label("Vsync ", skin);
-        vSyncLabel.setFontScale(2, 2);
 
         Table table = new Table();
         table.setFillParent(true);
@@ -115,8 +121,6 @@ public class ScreenSettings extends ScreenAdapter {
 
     @Override
     public void dispose() {
-        skin.dispose();
-        atlas.dispose();
         stage.dispose();
     }
 }
