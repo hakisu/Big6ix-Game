@@ -1,23 +1,23 @@
 package big6ix.game;
 
+import big6ix.game.map.Map;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 
 import java.util.HashMap;
-import java.util.Map;
 
 public enum TileType {
 
-    FLOOR_BASIC_0(0, true, GameMain.getGameAtlas().findRegion(Constants.ATLAS_MAP_FLOOR_NAME_0)),
-    FLOOR_BASIC_1(1, true, GameMain.getGameAtlas().findRegion(Constants.ATLAS_MAP_FLOOR_NAME_1)),
-    FLOOR_BASIC_2(2, true, GameMain.getGameAtlas().findRegion(Constants.ATLAS_MAP_FLOOR_NAME_2)),
-    FLOOR_BASIC_3(3, true, GameMain.getGameAtlas().findRegion(Constants.ATLAS_MAP_FLOOR_NAME_3)),
-    FLOOR_WHITE(4, true, GameMain.getGameAtlas().findRegion(Constants.ATLAS_MAP_FLOOR_WHITE_NAME)),
-    WALL_BASIC(100, false, GameMain.getGameAtlas().findRegion(Constants.ATLAS_MAP_WALL_NAME)),
-    DOOR(1000, false, GameMain.getGameAtlas().findRegion(Constants.ATLAS_MAP_DOOR_NAME)),
+    FLOOR_BASIC_0(0, true, GameMain.getGameAtlas().findRegion(Map.ATLAS_FLOOR_NAME_0)),
+    FLOOR_BASIC_1(1, true, GameMain.getGameAtlas().findRegion(Map.ATLAS_FLOOR_NAME_1)),
+    FLOOR_BASIC_2(2, true, GameMain.getGameAtlas().findRegion(Map.ATLAS_FLOOR_NAME_2)),
+    FLOOR_BASIC_3(3, true, GameMain.getGameAtlas().findRegion(Map.ATLAS_FLOOR_NAME_3)),
+    FLOOR_WHITE(4, true, GameMain.getGameAtlas().findRegion(Map.ATLAS_FLOOR_WHITE_NAME)),
+    WALL_BASIC(100, false, GameMain.getGameAtlas().findRegion(Map.ATLAS_WALL_NAME)),
+    DOOR(1000, false, GameMain.getGameAtlas().findRegion(Map.ATLAS_DOOR_NAME)),
     EMPTY(-1, false, null),
     UNKNOWN(-2, false, null);
 
-    private static final Map<Integer, TileType> intToTileTypeMap = new HashMap<>();
+    private static final java.util.Map<Integer, TileType> intToTileTypeMap = new HashMap<>();
 
     static {
         for (TileType currentTileType : TileType.values()) {
@@ -41,10 +41,6 @@ public enum TileType {
             return TileType.UNKNOWN;
         }
         return tileType;
-    }
-
-    public int getId() {
-        return id;
     }
 
     public TextureAtlas.AtlasRegion getAtlasRegion() {

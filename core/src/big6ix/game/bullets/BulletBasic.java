@@ -1,17 +1,23 @@
-package big6ix.game;
+package big6ix.game.bullets;
 
+import big6ix.game.GameMain;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 
 public final class BulletBasic extends Bullet {
 
-    private static final int SPEED = 17;
+    public static final int WIDTH = 16;
+    public static final int HEIGHT = 16;
+    private static final int SPEED = 13;
     private static final int DAMAGE_POWER = 1;
-    private static final int WIDTH = 16;
-    private static final int HEIGHT = 16;
+    private static final String FRIENDLY_ATLAS_NAME = "bullet_friendly";
+    private static final String HOSTILE_ATLAS_NAME = "bullet_hostile";
 
-    private static TextureAtlas.AtlasRegion atlasRegion;
+    private static TextureAtlas.AtlasRegion atlasRegionForFriendly;
+    private static TextureAtlas.AtlasRegion atlasRegionForHostile;
+
     static {
-        atlasRegion = GameMain.getGameAtlas().findRegion(Constants.ATLAS_BULLET_BASIC_NAME);
+        atlasRegionForFriendly = GameMain.getGameAtlas().findRegion(FRIENDLY_ATLAS_NAME);
+        atlasRegionForHostile = GameMain.getGameAtlas().findRegion(HOSTILE_ATLAS_NAME);
     }
 
     public BulletBasic(boolean friendly, float sourceX, float sourceY, float targetX, float targetY) {
@@ -32,7 +38,11 @@ public final class BulletBasic extends Bullet {
 
     @Override
     public TextureAtlas.AtlasRegion getAtlasRegion() {
-        return atlasRegion;
+        if (this.isFriendly()) {
+            return atlasRegionForFriendly;
+        } else {
+            return atlasRegionForHostile;
+        }
     }
 
     @Override

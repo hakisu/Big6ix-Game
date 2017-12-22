@@ -1,6 +1,5 @@
 package big6ix.game.map;
 
-import big6ix.game.Constants;
 import big6ix.game.Tile;
 import big6ix.game.TileType;
 import big6ix.game.utility.Pair;
@@ -13,12 +12,14 @@ import java.util.List;
 
 public class MapCreator {
 
+    private static final String ROOMS_DIRECTORY_PATH = "data/rooms";
+
     private int currentUniqueIdForWalkableTiles = 0;
     private ArrayList<RoomShape> roomShapes;
 
-    public MapCreator() {
+    MapCreator() {
         // Load all types of rooms from "*.room" files into ArrayList roomShapes
-        RoomsLoader roomsLoader = new RoomsLoader(Constants.ROOMS_DIRECTORY_PATH);
+        RoomsLoader roomsLoader = new RoomsLoader(ROOMS_DIRECTORY_PATH);
         roomShapes = roomsLoader.loadRoomFiles();
     }
 
@@ -37,7 +38,7 @@ public class MapCreator {
     }
 
     private TreeNode createMapTemplate() {
-        int amountOfRoomsToCreate = 5;
+        int amountOfRoomsToCreate = 1500;
 
         RoomShape currentRoomShape = getRandomRoomShape();
         Rectangle area = new Rectangle(
@@ -53,7 +54,7 @@ public class MapCreator {
         int roomsCreatedAmount = 1;
         roomsCreatedAmount += generateConnectionsForTreeNode(root);
 
-        int maxHeightOfTreeForMapGeneration = 150;
+        int maxHeightOfTreeForMapGeneration = 500;
         int currentHeightOfTree = 1;
 
         while (true) {

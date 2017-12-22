@@ -12,6 +12,11 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFont
 
 public class GameMain extends Game {
 
+    // A single batch can draw no more than 8191 sprites. Otherwise it will throw IllegalArgumentException
+    private static final int BATCH_MAX_NUMBER_OF_SPRITES = 2000;
+    private static final int CURSOR_X_HOTSPOT = 16;
+    private static final int CURSOR_Y_HOTSPOT = 16;
+
     private static TextureAtlas gameAtlas;
 
     // Game screens
@@ -21,15 +26,26 @@ public class GameMain extends Game {
     // Batch and font used for drawing available for different screen objects
     SpriteBatch batch;
     BitmapFont font;
+    private BigPreferences preferences;
 
     public static TextureAtlas getGameAtlas() {
         return gameAtlas;
     }
 
+    public ScreenGame getScreenGame() {
+        return screenGame;
+    }
+
+    public BigPreferences getPreferences() {
+        return preferences;
+    }
+
     @Override
     public void create() {
         gameAtlas = new TextureAtlas(Gdx.files.internal("graphics/gameTexturePack.atlas"), true);
-        batch = new SpriteBatch(Constants.BATCH_MAX_NUMBER_OF_SPRITES);
+        batch = new SpriteBatch(BATCH_MAX_NUMBER_OF_SPRITES);
+
+        preferences = new BigPreferences();
 
         FreeTypeFontGenerator fontGenerator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/OpenSans-Regular.ttf"));
         FreeTypeFontParameter fontParameter = new FreeTypeFontParameter();
@@ -41,7 +57,7 @@ public class GameMain extends Game {
         // Choosing crosshair image as game cursor
         Cursor gameCursor = Gdx.graphics.newCursor(
                 new Pixmap(Gdx.files.internal("graphics/crosshair.png")),
-                Constants.CURSOR_X_HOTSPOT, Constants.CURSOR_Y_HOTSPOT
+                CURSOR_X_HOTSPOT, CURSOR_Y_HOTSPOT
         );
         Gdx.graphics.setCursor(gameCursor);
 

@@ -1,5 +1,6 @@
 package big6ix.game;
 
+import big6ix.game.bullets.BulletBasic;
 import big6ix.game.map.Map;
 import big6ix.game.map.Room;
 import big6ix.game.utility.Pair;
@@ -14,18 +15,21 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector3;
 
 public class ScreenGame extends ScreenAdapter {
+
+    private static final long TICKS_PER_SECOND = 60;
+    // FrameTime represents time reserved for one frame in nanoseconds
+    private static final long FRAME_TIME = 1000000000 / TICKS_PER_SECOND;
+    public static float CAMERA_INITIAL_ZOOM = 1;
+
     private final GameMain gameMain;
-    private final long ticksPerSecond = 60;
-    ManagerBullets managerBullets;
-    ManagerEnemies managerEnemies;
-    Player player;
+    private ManagerBullets managerBullets;
+    private ManagerEnemies managerEnemies;
+    private Player player;
     private Map map;
     private OrthographicCamera camera;
     // Time management fields
     private long oldTime;
     private long timeAccumulator = 0;
-    // frameTime represents time reserved for one frame in nanoseconds
-    private long frameTime = 1000000000 / ticksPerSecond;
     private long updatesCount = 0;
     private Music mainTheme;
     private Sound shootingSound;
@@ -43,7 +47,7 @@ public class ScreenGame extends ScreenAdapter {
         // Music
         mainTheme = Gdx.audio.newMusic(Gdx.files.internal("sounds/main_theme.mp3"));
         mainTheme.setLooping(true);
-        mainTheme.setVolume(0.01f);
+        mainTheme.setVolume(gameMain.getPreferences().getMusicVolume());
 
         camera = new OrthographicCamera();
         camera.setToOrtho(true, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -57,9 +61,11 @@ public class ScreenGame extends ScreenAdapter {
     @Override
     public void show() {
         map = new Map();
+        // Spawn player character in random room on random tile
         Room roomForPlayerSpawn = map.getRandomRoom();
         Pair tileIndicesForPlayerSpawn = roomForPlayerSpawn.getRandomWalkableTileIndices();
         player = new Player(tileIndicesForPlayerSpawn.getIndexX(), tileIndicesForPlayerSpawn.getIndexY());
+
         managerBullets = new ManagerBullets(this.player, this.map);
         managerEnemies = new ManagerEnemies(this.player, this.managerBullets, this.map);
         managerBullets.setManagerEnemies(managerEnemies);
@@ -68,7 +74,7 @@ public class ScreenGame extends ScreenAdapter {
         Gdx.input.setInputProcessor(new InputAdapter() {
             @Override
             public boolean scrolled(int amount) {
-                Constants.CAMERA_INITIAL_ZOOM += amount;
+                CAMERA_INITIAL_ZOOM += amount;
                 return true;
             }
         });
@@ -86,8 +92,8 @@ public class ScreenGame extends ScreenAdapter {
 
         updateGraphics(timeDifference);
 
-        if (timeAccumulator >= frameTime) {
-            timeAccumulator -= frameTime;
+        if (timeAccumulator >= FRAME_TIME) {
+            timeAccumulator -= FRAME_TIME;
             ++updatesCount;
             update();
             handleInput();
@@ -111,7 +117,7 @@ public class ScreenGame extends ScreenAdapter {
 
         camera.position.x = player.getX() + player.getWidth() / 2;
         camera.position.y = player.getY() + player.getWidth() / 2;
-        camera.zoom = Constants.CAMERA_INITIAL_ZOOM;
+        camera.zoom = CAMERA_INITIAL_ZOOM;
 
         camera.update();
         gameMain.batch.setProjectionMatrix(camera.combined);
@@ -119,7 +125,7 @@ public class ScreenGame extends ScreenAdapter {
         // Starting drawing in batch
         gameMain.batch.begin();
 
-        map.render(gameMain.batch);
+        map.render(gameMain.batch, camera);
         managerEnemies.render(gameMain.batch);
         player.render(gameMain.batch, this.camera);
         managerBullets.render(gameMain.batch);
@@ -132,28 +138,38 @@ public class ScreenGame extends ScreenAdapter {
         player.update(this.map, gameMain);
         managerBullets.update();
         managerEnemies.update();
-        map.update(managerEnemies, player);
+        map.update(managerEnemies, player, gameMain);
     }
 
     private void handleInput() {
         if (Gdx.input.justTouched()) {
-            shootingSound.play(0.5f);
+            shootingSound.play(gameMain.getPreferences().getSoundEffectsVolume());
             Vector3 mousePositionInGameWorld = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
             camera.unproject(mousePositionInGameWorld);
 
             BulletBasic bulletBasic = new BulletBasic(
                     true,
-                    player.getX() + player.getWidth() / 2 - Constants.BULLET_BASIC_WIDTH / 2,
-                    player.getY() + player.getHeight() / 2 - Constants.BULLET_BASIC_HEIGHT / 2,
-                    mousePositionInGameWorld.x - Constants.BULLET_BASIC_WIDTH / 2,
-                    mousePositionInGameWorld.y - Constants.BULLET_BASIC_HEIGHT / 2
+                    player.getX() + player.getWidth() / 2 - BulletBasic.WIDTH / 2,
+                    player.getY() + player.getHeight() / 2 - BulletBasic.HEIGHT / 2,
+                    mousePositionInGameWorld.x - BulletBasic.WIDTH / 2,
+                    mousePositionInGameWorld.y - BulletBasic.HEIGHT / 2
             );
             managerBullets.addBullet(bulletBasic);
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
-            mainTheme.stop();
-            gameMain.setScreen(gameMain.screenMainMenu);
+            exitGameScreen();
         }
+        if (Gdx.input.isKeyPressed(Input.Keys.TAB)) {
+            CAMERA_INITIAL_ZOOM = 300;
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.BACKSPACE)) {
+            CAMERA_INITIAL_ZOOM = 1;
+        }
+    }
+
+    public void exitGameScreen() {
+        this.mainTheme.stop();
+        this.gameMain.setScreen(gameMain.screenMainMenu);
     }
 }

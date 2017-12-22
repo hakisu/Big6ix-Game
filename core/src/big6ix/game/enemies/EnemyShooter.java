@@ -1,7 +1,11 @@
 package big6ix.game.enemies;
 
-import big6ix.game.*;
-import big6ix.game.enemies.Enemy;
+import big6ix.game.GameMain;
+import big6ix.game.ManagerBullets;
+import big6ix.game.Player;
+import big6ix.game.Tile;
+import big6ix.game.bullets.Bullet;
+import big6ix.game.bullets.BulletBasic;
 import big6ix.game.map.Map;
 import big6ix.game.pathfinding.HeuristicDistance;
 import big6ix.game.pathfinding.TilePath;
@@ -14,13 +18,22 @@ import java.util.Random;
 
 public final class EnemyShooter extends Enemy {
 
+    private static final int HEALTH = 4;
+    private static final float SPEED_BASE = 0.7f;
+    private static final float SPEED_VARIATION = 0.8f;
+    private static final int MINIMAL_DISTANCE_FROM_PLAYER = 5;
+    private static final int WIDTH = 64;
+    private static final int HEIGHT = 64;
+    private static final String ATLAS_NAME = "enemy_shooter";
+    private static final float FRAME_DURATION = 0.2f;
+
     private static Animation<TextureRegion> animation;
     private static Sound shootingSound;
 
     static {
-        animation = new Animation<TextureRegion>(
-                Constants.ENEMY_SHOOTER_FRAME_DURATION,
-                GameMain.getGameAtlas().findRegions(Constants.ATLAS_ENEMY_NAME),
+        animation = new Animation<>(
+                FRAME_DURATION,
+                GameMain.getGameAtlas().findRegions(ATLAS_NAME),
                 Animation.PlayMode.LOOP
         );
         shootingSound = Gdx.audio.newSound(Gdx.files.internal("sounds/shoot.wav"));
@@ -36,10 +49,10 @@ public final class EnemyShooter extends Enemy {
     public EnemyShooter(float x, float y) {
         super(x, y);
         Random random = new Random();
-        this.width = Constants.ENEMY_SHOOTER_WIDTH;
-        this.height = Constants.ENEMY_SHOOTER_HEIGHT;
-        this.speed = random.nextFloat() * (Constants.ENEMY_SHOOTER_SPEED_VARIATION) + Constants.ENEMY_SHOOTER_SPEED_BASE;
-        this.health = Constants.ENEMY_SHOOTER_HEALTH;
+        this.width = WIDTH;
+        this.height = HEIGHT;
+        this.speed = random.nextFloat() * SPEED_VARIATION + SPEED_BASE;
+        this.health = HEALTH;
         tilePath = new TilePath();
     }
 
@@ -61,10 +74,10 @@ public final class EnemyShooter extends Enemy {
             updatesTimer = 0;
         }
 
-        int startTileIndexY = (int) (this.y + this.height / 2) / map.getTileHeight();
-        int startTileIndexX = (int) (this.x + this.width / 2) / map.getTileWidth();
-        int endTileIndexY = (int) (player.getY() + player.getHeight() / 2) / map.getTileHeight();
-        int endTileIndexX = (int) (player.getX() + player.getWidth() / 2) / map.getTileWidth();
+        int startTileIndexY = (int) (this.y + this.height / 2) / Map.TILE_HEIGHT;
+        int startTileIndexX = (int) (this.x + this.width / 2) / Map.TILE_WIDTH;
+        int endTileIndexY = (int) (player.getY() + player.getHeight() / 2) / Map.TILE_HEIGHT;
+        int endTileIndexX = (int) (player.getX() + player.getWidth() / 2) / Map.TILE_WIDTH;
         Tile startTile = map.getMapArray()[startTileIndexY][startTileIndexX];
         Tile endTile = map.getMapArray()[endTileIndexY][endTileIndexX];
 
@@ -82,30 +95,30 @@ public final class EnemyShooter extends Enemy {
         }
 
 //        float distance = (float) Math.sqrt(Math.pow(player.getX() - this.x, 2) + Math.pow(player.getY() - this.y, 2));
-//        if (new HeuristicDistance().estimate(startTile, endTile) > Constants.ENEMY_SHOOTER_MINIMAL_DISTANCE_FROM_PLAYER) {
-        boolean reachedPositionX = false, reachedPositionY = false;
-        int indexToReach = tilePath.getCount() > 1 ? 1 : 0;
-        Tile nextStepTile = tilePath.get(indexToReach);
-        if (this.x + this.speed < nextStepTile.calculatePosX(map)) {
-            this.x += this.speed;
-        } else if (this.x - this.speed > nextStepTile.calculatePosX(map)) {
-            this.x -= this.speed;
-        } else {
-            this.x = nextStepTile.calculatePosX(map);
-            reachedPositionX = true;
+        if (new HeuristicDistance(map).estimate(startTile, endTile) > MINIMAL_DISTANCE_FROM_PLAYER) {
+            boolean reachedPositionX = false, reachedPositionY = false;
+            int indexToReach = tilePath.getCount() > 1 ? 1 : 0;
+            Tile nextStepTile = tilePath.get(indexToReach);
+            if (this.x + this.speed < nextStepTile.calculatePosX(map)) {
+                this.x += this.speed;
+            } else if (this.x - this.speed > nextStepTile.calculatePosX(map)) {
+                this.x -= this.speed;
+            } else {
+                this.x = nextStepTile.calculatePosX(map);
+                reachedPositionX = true;
+            }
+            if (this.y + this.speed < nextStepTile.calculatePosY(map)) {
+                this.y += this.speed;
+            } else if (this.y - this.speed > nextStepTile.calculatePosY(map)) {
+                this.y -= this.speed;
+            } else {
+                this.y = nextStepTile.calculatePosY(map);
+                reachedPositionY = true;
+            }
+            if (reachedPositionX && reachedPositionY) {
+                inMovementBetweenTiles = false;
+            }
         }
-        if (this.y + this.speed < nextStepTile.calculatePosY(map)) {
-            this.y += this.speed;
-        } else if (this.y - this.speed > nextStepTile.calculatePosY(map)) {
-            this.y -= this.speed;
-        } else {
-            this.y = nextStepTile.calculatePosY(map);
-            reachedPositionY = true;
-        }
-        if (reachedPositionX && reachedPositionY) {
-            inMovementBetweenTiles = false;
-        }
-//        }
     }
 
     @Override

@@ -41,10 +41,10 @@ public class Tile {
     }
 
     public float calculatePosX(Map map) {
-        return (index % map.getColumnsAmount()) * map.getTileWidth();
+        return (index % map.getColumnsAmount()) * Map.TILE_WIDTH;
     }
 
     public float calculatePosY(Map map) {
-        return (index / map.getColumnsAmount()) * map.getTileHeight();
+        return (index / map.getColumnsAmount()) * Map.TILE_HEIGHT;
     }
 }

@@ -4,10 +4,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -22,18 +22,15 @@ public class ScreenMainMenu extends ScreenAdapter {
     private final GameMain gameMain;
     private Stage stage;
     private Skin skin;
+    private TextureAtlas atlas;
     private Music intro;
 
-    public ScreenMainMenu(final GameMain gameMain) {
-        this.gameMain = gameMain;
 
+    public ScreenMainMenu(final GameMain game) {
+        this.gameMain = game;
 
-        skin = new Skin();
-        skin.add("default-font", this.gameMain.font, BitmapFont.class);
-        FileHandle fileHandle = Gdx.files.internal("skins/skin.json");
-        FileHandle atlasFile = Gdx.files.internal("skins/skin.atlas");
-        skin.addRegions(new TextureAtlas(atlasFile));
-        skin.load(fileHandle);
+        atlas = new TextureAtlas("uiskin.atlas");
+        skin = new Skin(Gdx.files.internal("uiskin.json"), atlas);
 
         Viewport stretchViewPort = new StretchViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         stage = new Stage(stretchViewPort);
@@ -41,7 +38,8 @@ public class ScreenMainMenu extends ScreenAdapter {
         // Music
         intro = Gdx.audio.newMusic((Gdx.files.internal("sounds/intro.mp3")));
         intro.setLooping(true);
-        intro.setVolume(1.0f);
+        intro.setVolume(gameMain.getPreferences().getMusicVolume());
+
     }
 
     public void updateViewPort(Viewport viewport) {
@@ -50,6 +48,18 @@ public class ScreenMainMenu extends ScreenAdapter {
 
     @Override
     public void show() {
+
+
+        if(gameMain.getPreferences().isFullscreenEnabled() == true)
+        {
+            Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
+            stage.getViewport().update(1920, 1080);
+        }
+        else{
+            Gdx.graphics.setWindowedMode(800, 800);
+            stage.getViewport().update(800, 800);
+        }
+
         System.out.println("ScreenMainMenu Show.");
 
         intro.play();
@@ -60,9 +70,13 @@ public class ScreenMainMenu extends ScreenAdapter {
 
         mainTable.center();
 
+
         TextButton playButton = new TextButton("Play", skin);
         TextButton optionsButton = new TextButton("Options", skin);
         TextButton exitButton = new TextButton("Exit", skin);
+        playButton.getLabel().setFontScale(3, 3);
+        optionsButton.getLabel().setFontScale(3, 3);
+        exitButton.getLabel().setFontScale(3, 3);
 
         // Manage inputs
         playButton.addListener(new ClickListener() {
@@ -117,6 +131,8 @@ public class ScreenMainMenu extends ScreenAdapter {
     @Override
     public void dispose() {
         intro.dispose();
+        skin.dispose();
+        atlas.dispose();
         stage.dispose();
     }
 }

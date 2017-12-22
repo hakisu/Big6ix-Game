@@ -1,4 +1,4 @@
-package big6ix.game;
+package big6ix.game.bullets;
 
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 

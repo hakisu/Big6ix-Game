@@ -10,6 +10,8 @@ import java.util.Iterator;
 
 public class ManagerEnemies {
 
+    private static final int INITIAL_ENEMIES_CAPACITY = 1000;
+    
     // References to objects needed by ManagerEnemies
     private Player player;
     private ManagerBullets managerBullets;
@@ -20,7 +22,7 @@ public class ManagerEnemies {
     private IndexedAStarPathFinder<Tile> pathFinder;
 
     public ManagerEnemies(Player player, ManagerBullets managerBullets, Map map) {
-        this.enemies = new Array<Enemy>(false, Constants.INITIAL_ENEMIES_CAPACITY);
+        this.enemies = new Array<Enemy>(false, INITIAL_ENEMIES_CAPACITY);
         this.player = player;
         this.managerBullets = managerBullets;
         this.map = map;

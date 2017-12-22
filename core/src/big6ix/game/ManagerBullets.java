@@ -1,5 +1,6 @@
 package big6ix.game;
 
+import big6ix.game.bullets.Bullet;
 import big6ix.game.enemies.Enemy;
 import big6ix.game.map.Map;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -8,6 +9,8 @@ import com.badlogic.gdx.utils.Array;
 import java.util.Iterator;
 
 public class ManagerBullets {
+
+    private static final int INITIAL_BULLETS_CAPACITY = 10000;
 
     // References to objects needed by ManagerBullets
     private Map map;
@@ -18,7 +21,7 @@ public class ManagerBullets {
     private Iterator<Bullet> bulletsIterator;
 
     public ManagerBullets(Player player, Map map) {
-        this.bullets = new Array<Bullet>(false, Constants.INITIAL_BULLETS_CAPACITY);
+        this.bullets = new Array<>(false, INITIAL_BULLETS_CAPACITY);
         this.map = map;
         this.player = player;
     }
@@ -34,7 +37,7 @@ public class ManagerBullets {
             currentBullet = bulletsIterator.next();
             boolean bulletStillExists = true;
 
-            if (bulletStillExists && checkTerrainCollision(currentBullet)) {
+            if (checkTerrainCollision(currentBullet)) {
                 bulletsIterator.remove();
                 bulletStillExists = false;
             }
@@ -46,7 +49,6 @@ public class ManagerBullets {
             }
             if (bulletStillExists && checkEnemyCollision(currentBullet)) {
                 bulletsIterator.remove();
-                bulletStillExists = false;
             }
             currentBullet.update();
         }
@@ -67,9 +69,9 @@ public class ManagerBullets {
 
     private boolean checkTerrainCollision(Bullet bullet) {
         // Add conditions depending on current bullet speedX and speedY
-        if (bullet.getX() >= 0 && bullet.getX() <= map.getTileWidth() * map.getMapArray()[0].length
-                && bullet.getY() >= 0 && bullet.getY() <= map.getTileHeight() * map.getMapArray().length) {
-            if (!map.getMapArray()[(int) bullet.getY() / map.getTileHeight()][(int) bullet.getX() / map.getTileWidth()].isWalkable()) {
+        if (bullet.getX() >= 0 && bullet.getX() <= Map.TILE_WIDTH * map.getMapArray()[0].length
+                && bullet.getY() >= 0 && bullet.getY() <= Map.TILE_HEIGHT * map.getMapArray().length) {
+            if (!map.getMapArray()[(int) bullet.getY() / Map.TILE_HEIGHT][(int) bullet.getX() / Map.TILE_WIDTH].isWalkable()) {
                 return true;
             }
         }
@@ -98,7 +100,7 @@ public class ManagerBullets {
         return false;
     }
 
-    // Used only for enemy (not friendly) bullets
+    // Used only for hostile (enemy) bullets
     private boolean checkPlayerCollision(Bullet bullet) {
         if (!bullet.isFriendly()) {
             float distanceX = (bullet.getX() + bullet.getWidth() / 2) - (player.getX() + player.getWidth() / 2);

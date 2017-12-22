@@ -1,17 +1,19 @@
 package big6ix.game.map;
 
-import big6ix.game.Constants;
+import big6ix.game.GameMain;
 import big6ix.game.ManagerEnemies;
 import big6ix.game.Player;
 import big6ix.game.TileType;
+import big6ix.game.enemies.EnemyBomber;
 import big6ix.game.enemies.EnemyShooter;
 import big6ix.game.utility.Pair;
+import big6ix.game.utility.Utilities;
 
 import java.util.List;
 
 public class MapState {
 
-    private final int DISTANCE_FOR_DOOR_CLOSING = 2;
+    private static final int DISTANCE_FOR_DOOR_CLOSING = 2;
 
     private boolean inFight;
     private MapData mapData;
@@ -19,7 +21,7 @@ public class MapState {
     private int currentOccupiedRoomIndex;
     private boolean[] roomsCompletionStatuses;
 
-    public MapState(MapData mapData) {
+    MapState(MapData mapData) {
         this.inFight = false;
         this.mapData = mapData;
         currentOccupiedRoom = null;
@@ -27,22 +29,35 @@ public class MapState {
         roomsCompletionStatuses = new boolean[mapData.getRooms().size()];
     }
 
-    public void update(ManagerEnemies managerEnemies, Player player) {
-        if (inFight == true) {
-            if (checkIfAllEnemiesEliminated(managerEnemies) == true) {
+    public void update(ManagerEnemies managerEnemies, Player player, GameMain gameMain) {
+        if (inFight) {
+            if (checkIfAllEnemiesEliminated(managerEnemies)) {
                 roomsCompletionStatuses[currentOccupiedRoomIndex] = true;
                 openDoors();
                 inFight = false;
             }
         } else {
             calculateAndChangeCurrentOccupiedRoom(player);
-            if (roomsCompletionStatuses[currentOccupiedRoomIndex] == false) {
+            if (!roomsCompletionStatuses[currentOccupiedRoomIndex]) {
                 closeDoors();
                 inFight = true;
-                // testing spawing enemy
-                Pair enemyIndices = currentOccupiedRoom.getRandomWalkableTileIndices();
-                managerEnemies.addEnemy(new EnemyShooter(enemyIndices.getIndexX() * Constants.TILE_WIDTH, enemyIndices.getIndexY() * Constants.TILE_HEIGHT));
+                // testing spawning enemy
+                int numberOfEnemies = Utilities.generateRandomInt(2, 5);
+                int currentNumberOfEnemies = 0;
+                while (currentNumberOfEnemies < numberOfEnemies) {
+                    int enemyType = Utilities.generateRandomInt(0, 1);
+                    Pair enemyIndices = currentOccupiedRoom.getRandomWalkableTileIndices();
+                    if (enemyType == 0) {
+                        managerEnemies.addEnemy(new EnemyShooter(enemyIndices.getIndexX() * Map.TILE_WIDTH, enemyIndices.getIndexY() * Map.TILE_HEIGHT));
+                    } else if (enemyType == 1) {
+                        managerEnemies.addEnemy(new EnemyBomber(enemyIndices.getIndexX() * Map.TILE_WIDTH, enemyIndices.getIndexY() * Map.TILE_HEIGHT));
+                    }
+                    currentNumberOfEnemies++;
+                }
             }
+        }
+        if (checkIfLevelIsCompleted()) {
+            gameMain.getScreenGame().exitGameScreen();
         }
     }
 
@@ -119,5 +134,15 @@ public class MapState {
         int distanceVertical = Math.abs(position1.getIndexY() - position2.getIndexY());
 
         return distanceHorizontal + distanceVertical;
+    }
+
+    private boolean checkIfLevelIsCompleted() {
+        for (boolean currentRoomCompletionStatus : roomsCompletionStatuses) {
+            if (!currentRoomCompletionStatus) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }
