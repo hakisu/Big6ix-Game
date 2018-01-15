@@ -4,10 +4,11 @@ import big6ix.game.TileType;
 import big6ix.game.utility.Pair;
 import big6ix.game.utility.Utilities;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Room {
+public class Room implements Serializable{
 
     private RoomShape roomShape;
     private int x;

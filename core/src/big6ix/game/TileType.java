@@ -1,6 +1,7 @@
 package big6ix.game;
 
 import big6ix.game.map.Map;
+import big6ix.game.screens.GameMain;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 
 import java.util.HashMap;

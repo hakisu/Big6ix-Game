@@ -1,17 +1,17 @@
 package big6ix.game.map;
 
-import big6ix.game.GameMain;
 import big6ix.game.ManagerEnemies;
 import big6ix.game.Player;
 import big6ix.game.TileType;
-import big6ix.game.enemies.EnemyBomber;
-import big6ix.game.enemies.EnemyShooter;
+import big6ix.game.enemies.EnemyCreator;
+import big6ix.game.screens.GameMain;
 import big6ix.game.utility.Pair;
 import big6ix.game.utility.Utilities;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class MapState {
+public class MapState implements Serializable {
 
     private static final int DISTANCE_FOR_DOOR_CLOSING = 2;
 
@@ -38,20 +38,14 @@ public class MapState {
             }
         } else {
             calculateAndChangeCurrentOccupiedRoom(player);
-            if (!roomsCompletionStatuses[currentOccupiedRoomIndex]) {
+            if (currentOccupiedRoom != null && !roomsCompletionStatuses[currentOccupiedRoomIndex]) {
                 closeDoors();
                 inFight = true;
-                // testing spawning enemy
                 int numberOfEnemies = Utilities.generateRandomInt(2, 5);
                 int currentNumberOfEnemies = 0;
                 while (currentNumberOfEnemies < numberOfEnemies) {
-                    int enemyType = Utilities.generateRandomInt(0, 1);
                     Pair enemyIndices = currentOccupiedRoom.getRandomWalkableTileIndices();
-                    if (enemyType == 0) {
-                        managerEnemies.addEnemy(new EnemyShooter(enemyIndices.getIndexX() * Map.TILE_WIDTH, enemyIndices.getIndexY() * Map.TILE_HEIGHT));
-                    } else if (enemyType == 1) {
-                        managerEnemies.addEnemy(new EnemyBomber(enemyIndices.getIndexX() * Map.TILE_WIDTH, enemyIndices.getIndexY() * Map.TILE_HEIGHT));
-                    }
+                    managerEnemies.addEnemy(new EnemyCreator(enemyIndices.getIndexX() * Map.TILE_WIDTH, enemyIndices.getIndexY() * Map.TILE_HEIGHT));
                     currentNumberOfEnemies++;
                 }
             }

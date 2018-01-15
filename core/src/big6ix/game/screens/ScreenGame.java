@@ -1,12 +1,14 @@
-package big6ix.game;
+package big6ix.game.screens;
 
+import big6ix.game.ManagerBullets;
+import big6ix.game.ManagerEnemies;
+import big6ix.game.Player;
 import big6ix.game.bullets.BulletBasic;
 import big6ix.game.map.Map;
 import big6ix.game.map.Room;
 import big6ix.game.utility.Pair;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
@@ -14,11 +16,17 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector3;
 
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.util.HashMap;
+
 public class ScreenGame extends ScreenAdapter {
 
-    private static final long TICKS_PER_SECOND = 60;
+    public static final long TICKS_PER_SECOND = 60;
     // FrameTime represents time reserved for one frame in nanoseconds
     private static final long FRAME_TIME = 1000000000 / TICKS_PER_SECOND;
+    // In case if we easily want to change zoom in the game
     public static float CAMERA_INITIAL_ZOOM = 1;
 
     private final GameMain gameMain;
@@ -38,76 +46,20 @@ public class ScreenGame extends ScreenAdapter {
         this.gameMain = gameMain;
         shootingSound = Gdx.audio.newSound(Gdx.files.internal("sounds/shoot.wav"));
 
-//        map = new Map();
-//        player = new Player();
-//        managerBullets = new ManagerBullets(this.player, this.map);
-//        managerEnemies = new ManagerEnemies(this.player, this.managerBullets, this.map);
-//        managerBullets.setManagerEnemies(managerEnemies);
-
         // Music
         mainTheme = Gdx.audio.newMusic(Gdx.files.internal("sounds/main_theme.mp3"));
         mainTheme.setLooping(true);
-        mainTheme.setVolume(gameMain.getPreferences().getMusicVolume());
+        mainTheme.setVolume(GameMain.getPreferences().getMusicVolume());
 
         camera = new OrthographicCamera();
         camera.setToOrtho(true, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-
-//        managerEnemies.addEnemy(new EnemyShooter(128, 200));
-//        managerEnemies.addEnemy(new EnemyShooter(700, 1200));
-//        managerEnemies.addEnemy(new EnemyShooter(1100, 700));
-//        managerEnemies.addEnemy(new EnemyShooter(1520, 1100));
     }
 
-    @Override
-    public void show() {
-        map = new Map();
-        // Spawn player character in random room on random tile
-        Room roomForPlayerSpawn = map.getRandomRoom();
-        Pair tileIndicesForPlayerSpawn = roomForPlayerSpawn.getRandomWalkableTileIndices();
-        player = new Player(tileIndicesForPlayerSpawn.getIndexX(), tileIndicesForPlayerSpawn.getIndexY());
-
-        managerBullets = new ManagerBullets(this.player, this.map);
-        managerEnemies = new ManagerEnemies(this.player, this.managerBullets, this.map);
-        managerBullets.setManagerEnemies(managerEnemies);
-        mainTheme.play();
-        // For debugging
-        Gdx.input.setInputProcessor(new InputAdapter() {
-            @Override
-            public boolean scrolled(int amount) {
-                CAMERA_INITIAL_ZOOM += amount;
-                return true;
-            }
-        });
-        oldTime = System.nanoTime();
-        System.out.println("Game screen set to active.");
-    }
-
-    // Main game loop for physics, input and graphics updates
-    @Override
-    public void render(float delta) {
-        long newTime = System.nanoTime();
-        long timeDifference = newTime - oldTime;
-        oldTime = newTime;
-        timeAccumulator += timeDifference;
-
-        updateGraphics(timeDifference);
-
-        if (timeAccumulator >= FRAME_TIME) {
-            timeAccumulator -= FRAME_TIME;
-            ++updatesCount;
-            update();
-            handleInput();
-        }
-    }
-
-    @Override
-    public void dispose() {
-        mainTheme.dispose();
-    }
-
-    @Override
-    public void hide() {
-        Gdx.input.setInputProcessor(null);
+    private void update() {
+        player.update(this.map, gameMain);
+        managerBullets.update();
+        managerEnemies.update();
+        map.update(managerEnemies, player, gameMain);
     }
 
     private void updateGraphics(long timeDifference) {
@@ -134,16 +86,9 @@ public class ScreenGame extends ScreenAdapter {
         gameMain.batch.end();
     }
 
-    private void update() {
-        player.update(this.map, gameMain);
-        managerBullets.update();
-        managerEnemies.update();
-        map.update(managerEnemies, player, gameMain);
-    }
-
     private void handleInput() {
         if (Gdx.input.justTouched()) {
-            shootingSound.play(gameMain.getPreferences().getSoundEffectsVolume());
+            shootingSound.play(GameMain.getPreferences().getSoundEffectsVolume());
             Vector3 mousePositionInGameWorld = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
             camera.unproject(mousePositionInGameWorld);
 
@@ -170,6 +115,74 @@ public class ScreenGame extends ScreenAdapter {
 
     public void exitGameScreen() {
         this.mainTheme.stop();
-        this.gameMain.setScreen(gameMain.screenMainMenu);
+        this.gameMain.activateMainMenuScreen();
+    }
+
+    public void initializeGame() {
+        map = new Map();
+        // Spawn player character in random room on random tile
+        Room roomForPlayerSpawn = map.getRandomRoom();
+        Pair tileIndicesForPlayerSpawn = roomForPlayerSpawn.getRandomWalkableTileIndices();
+        player = new Player(tileIndicesForPlayerSpawn.getIndexX(), tileIndicesForPlayerSpawn.getIndexY());
+
+        managerBullets = new ManagerBullets(this.player, this.map);
+        managerEnemies = new ManagerEnemies(this.player, this.managerBullets, this.map);
+        managerBullets.setManagerEnemies(managerEnemies);
+    }
+
+    public void initializeGame(Map map, Pair playerPosition) {
+        this.map = map;
+        this.map.initializePathFinder();
+        this.player = new Player(playerPosition.getIndexX(), playerPosition.getIndexY());
+        this.managerBullets = new ManagerBullets(this.player, this.map);
+        this.managerEnemies = new ManagerEnemies(this.player, this.managerBullets, this.map);
+        this.managerBullets.setManagerEnemies(managerEnemies);
+    }
+
+    @Override
+    public void show() {
+        mainTheme.play();
+        oldTime = System.nanoTime();
+
+        System.out.println("Game screen set to active.");
+    }
+
+    // Main game loop for physics, input and graphics updates
+    @Override
+    public void render(float delta) {
+        long newTime = System.nanoTime();
+        long timeDifference = newTime - oldTime;
+        oldTime = newTime;
+        timeAccumulator += timeDifference;
+
+        updateGraphics(timeDifference);
+
+        if (timeAccumulator >= FRAME_TIME) {
+            timeAccumulator -= FRAME_TIME;
+            ++updatesCount;
+            update();
+            handleInput();
+        }
+    }
+
+    @Override
+    public void dispose() {
+        HashMap<String, Object> savedGame = new HashMap<>();
+        if (map != null) {
+            try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(GameMain.PATH_TO_SAVE_FILE))) {
+                savedGame.put("map", this.map);
+                savedGame.put("playerPosition", new Pair((int) this.player.getX() / Map.TILE_WIDTH, (int) this.player.getY() / Map.TILE_HEIGHT));
+                out.writeObject(savedGame);
+                out.flush();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        mainTheme.dispose();
+    }
+
+    @Override
+    public void hide() {
+        Gdx.input.setInputProcessor(null);
     }
 }

@@ -34,7 +34,7 @@ public class ManagerEnemies {
         enemiesIterator = enemies.iterator();
         while (enemiesIterator.hasNext()) {
             currentEnemy = enemiesIterator.next();
-            currentEnemy.update(player, managerBullets, map);
+            currentEnemy.update(player,this, managerBullets, map);
             removeDeadEnemy(currentEnemy);
         }
     }

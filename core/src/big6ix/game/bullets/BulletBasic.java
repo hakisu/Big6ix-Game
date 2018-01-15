@@ -1,6 +1,6 @@
 package big6ix.game.bullets;
 
-import big6ix.game.GameMain;
+import big6ix.game.screens.GameMain;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 
 public final class BulletBasic extends Bullet {

@@ -3,7 +3,9 @@ package big6ix.game;
 import big6ix.game.map.Map;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 
-public class Tile {
+import java.io.Serializable;
+
+public class Tile implements Serializable {
 
     private TileType tileType;
     // Each tile in map has unique index

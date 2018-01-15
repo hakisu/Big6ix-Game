@@ -2,15 +2,17 @@ package big6ix.game.map;
 
 import big6ix.game.Tile;
 import big6ix.game.TileType;
+import big6ix.game.screens.GameMain;
 import big6ix.game.utility.Pair;
 import big6ix.game.utility.Utilities;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MapCreator {
+public class MapCreator implements Serializable {
 
     private static final String ROOMS_DIRECTORY_PATH = "data/rooms";
 
@@ -38,7 +40,7 @@ public class MapCreator {
     }
 
     private TreeNode createMapTemplate() {
-        int amountOfRoomsToCreate = 1500;
+        int amountOfRoomsToCreate = GameMain.getPreferences().getRoomsAmount();
 
         RoomShape currentRoomShape = getRandomRoomShape();
         Rectangle area = new Rectangle(
@@ -54,7 +56,7 @@ public class MapCreator {
         int roomsCreatedAmount = 1;
         roomsCreatedAmount += generateConnectionsForTreeNode(root);
 
-        int maxHeightOfTreeForMapGeneration = 500;
+        int maxHeightOfTreeForMapGeneration = 250;
         int currentHeightOfTree = 1;
 
         while (true) {

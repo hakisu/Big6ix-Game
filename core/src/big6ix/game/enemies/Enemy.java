@@ -1,6 +1,7 @@
 package big6ix.game.enemies;
 
 import big6ix.game.ManagerBullets;
+import big6ix.game.ManagerEnemies;
 import big6ix.game.Player;
 import big6ix.game.map.Map;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -48,7 +49,7 @@ public abstract class Enemy {
         this.health = health;
     }
 
-    public abstract void update(Player player, ManagerBullets managerBullets, Map map);
+    public abstract void update(Player player, ManagerEnemies managerEnemies, ManagerBullets managerBullets, Map map);
 
     public abstract TextureRegion getCurrentTextureRegion();
 }

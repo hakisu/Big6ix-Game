@@ -1,5 +1,9 @@
-package big6ix.game;
+package big6ix.game.screens;
 
+import big6ix.game.BigPreferences;
+import big6ix.game.Player;
+import big6ix.game.map.Map;
+import big6ix.game.utility.Pair;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Cursor;
@@ -12,40 +16,80 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFont
 
 public class GameMain extends Game {
 
+    public static final String PATH_TO_SAVE_FILE = "data/game.save";
+    public static final String UI_SKINS_ATLAS_NAME = "skins/uiskin.atlas";
+    public static final String UI_SKINS_JSON_NAME = "skins/uiskin.json";
     // A single batch can draw no more than 8191 sprites. Otherwise it will throw IllegalArgumentException
     private static final int BATCH_MAX_NUMBER_OF_SPRITES = 2000;
     private static final int CURSOR_X_HOTSPOT = 16;
     private static final int CURSOR_Y_HOTSPOT = 16;
 
     private static TextureAtlas gameAtlas;
+    private static BigPreferences preferences;
 
-    // Game screens
-    ScreenGame screenGame;
-    ScreenMainMenu screenMainMenu;
-    ScreenSettings screenSettings;
+    static {
+        preferences = new BigPreferences();
+    }
+
     // Batch and font used for drawing available for different screen objects
-    SpriteBatch batch;
-    BitmapFont font;
-    private BigPreferences preferences;
+    public SpriteBatch batch;
+    private BitmapFont font;
+    private Cursor gameCursor;
+    // Game screens
+    private ScreenGame screenGame;
+    private ScreenMainMenu screenMainMenu;
+    private ScreenSettings screenSettings;
 
     public static TextureAtlas getGameAtlas() {
         return gameAtlas;
+    }
+
+    public static BigPreferences getPreferences() {
+        return preferences;
     }
 
     public ScreenGame getScreenGame() {
         return screenGame;
     }
 
-    public BigPreferences getPreferences() {
-        return preferences;
+    public void updateIntroMusicVolume() {
+        screenMainMenu.updateIntroMusicVolume();
+    }
+
+    public void initializeGame() {
+        screenGame.initializeGame();
+    }
+
+    public void initializeGame(Map map, Pair playerPosition) {
+        screenGame.initializeGame(map, playerPosition);
+    }
+
+    public void activateGameScreen() {
+        activateGameCursor();
+        this.setScreen(screenGame);
+    }
+
+    public void activateMainMenuScreen() {
+        activateNormalCursor();
+        this.setScreen(screenMainMenu);
+    }
+
+    public void activateSettingsScreen() {
+        this.setScreen(screenSettings);
+    }
+
+    public void activateGameCursor() {
+        Gdx.graphics.setCursor(gameCursor);
+    }
+
+    public void activateNormalCursor() {
+        Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Arrow);
     }
 
     @Override
     public void create() {
         gameAtlas = new TextureAtlas(Gdx.files.internal("graphics/gameTexturePack.atlas"), true);
         batch = new SpriteBatch(BATCH_MAX_NUMBER_OF_SPRITES);
-
-        preferences = new BigPreferences();
 
         FreeTypeFontGenerator fontGenerator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/OpenSans-Regular.ttf"));
         FreeTypeFontParameter fontParameter = new FreeTypeFontParameter();
@@ -55,11 +99,11 @@ public class GameMain extends Game {
         fontGenerator.dispose();
 
         // Choosing crosshair image as game cursor
-        Cursor gameCursor = Gdx.graphics.newCursor(
+        gameCursor = Gdx.graphics.newCursor(
                 new Pixmap(Gdx.files.internal("graphics/crosshair.png")),
-                CURSOR_X_HOTSPOT, CURSOR_Y_HOTSPOT
+                CURSOR_X_HOTSPOT,
+                CURSOR_Y_HOTSPOT
         );
-        Gdx.graphics.setCursor(gameCursor);
 
         // Screens initialization
         screenGame = new ScreenGame(this);
@@ -73,16 +117,6 @@ public class GameMain extends Game {
     public void render() {
         // Render method is called on each screen object differently
         super.render();
-    }
-
-    @Override
-    public void pause() {
-        System.out.println("Pause called from GameMain.");
-    }
-
-    @Override
-    public void resume() {
-        System.out.println("Resume called from GameMain.");
     }
 
     @Override

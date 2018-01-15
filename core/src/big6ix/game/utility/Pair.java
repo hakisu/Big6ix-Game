@@ -1,6 +1,8 @@
 package big6ix.game.utility;
 
-public class Pair {
+import java.io.Serializable;
+
+public class Pair implements Serializable {
     private int indexX;
     private int indexY;
 
@@ -32,9 +34,11 @@ public class Pair {
 
     @Override
     public boolean equals(Object pair) {
-        if (pair == null) return false;
+        if (this == pair) return true;
+        if (pair == null || getClass() != pair.getClass()) return false;
+        Pair convertedObject = (Pair) pair;
 
-        return (this.indexX == ((Pair) pair).indexX && this.indexY == ((Pair) pair).indexY);
+        return (this.indexX == convertedObject.indexX && this.indexY == convertedObject.indexY);
     }
 
     @Override

@@ -2,9 +2,10 @@ package big6ix.game.map;
 
 import big6ix.game.Tile;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class MapData {
+public class MapData implements Serializable {
 
     private Tile[][] mapArray;
     private int rowsAmount;

@@ -3,9 +3,10 @@ package big6ix.game.map;
 import big6ix.game.TileType;
 import big6ix.game.utility.Pair;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class RoomShape {
+public class RoomShape implements Serializable {
 
     private TileType[][] roomArray;
     private int rowsAmount;

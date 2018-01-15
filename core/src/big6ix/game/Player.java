@@ -1,6 +1,7 @@
 package big6ix.game;
 
 import big6ix.game.map.Map;
+import big6ix.game.screens.GameMain;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.audio.Sound;
@@ -11,7 +12,9 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 
-public class Player {
+import java.io.Serializable;
+
+public class Player{
 
     private static final int SPEED = 6;
     private static final int INITIAL_HEALTH = 3;
@@ -125,7 +128,6 @@ public class Player {
     public void update(Map map, GameMain gameMain) {
         // inMovement is used to determine if running animation should be used for player
         inMovement = false;
-//        debugMove();
 
         int tileIndexY, tileIndexX;
         if (Gdx.input.isKeyPressed(Input.Keys.W)) {
@@ -167,7 +169,7 @@ public class Player {
         timetoNextSound += Gdx.graphics.getDeltaTime();
         if (inMovement) {
             if (timetoNextSound >= soundLength) {
-                stepSound.play(gameMain.getPreferences().getSoundEffectsVolume());
+                stepSound.play(GameMain.getPreferences().getSoundEffectsVolume());
                 timetoNextSound = 0;
             }
         }
@@ -198,19 +200,5 @@ public class Player {
 
     private boolean isPlayerStillAlive() {
         return this.health > 0;
-    }
-
-    private void debugMove() {
-        int speedMultiplier = 20;
-        if (Gdx.input.isKeyPressed(Input.Keys.W)) {
-            hitBox.y -= speed * speedMultiplier;
-        } else if (Gdx.input.isKeyPressed(Input.Keys.S)) {
-            hitBox.y += speed * speedMultiplier;
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.A)) {
-            hitBox.x -= speed * speedMultiplier;
-        } else if (Gdx.input.isKeyPressed(Input.Keys.D)) {
-            hitBox.x += speed * speedMultiplier;
-        }
     }
 }

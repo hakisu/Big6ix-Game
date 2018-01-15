@@ -1,6 +1,6 @@
 package big6ix.game.desktop;
 
-import big6ix.game.GameMain;
+import big6ix.game.screens.GameMain;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.tools.texturepacker.TexturePacker;

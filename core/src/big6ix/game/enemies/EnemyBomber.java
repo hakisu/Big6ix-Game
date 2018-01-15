@@ -1,14 +1,14 @@
 package big6ix.game.enemies;
 
-import big6ix.game.GameMain;
 import big6ix.game.ManagerBullets;
+import big6ix.game.ManagerEnemies;
 import big6ix.game.Player;
 import big6ix.game.Tile;
 import big6ix.game.map.Map;
 import big6ix.game.pathfinding.HeuristicDistance;
 import big6ix.game.pathfinding.TilePath;
+import big6ix.game.screens.GameMain;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
@@ -22,12 +22,10 @@ public final class EnemyBomber extends Enemy {
     private static final float SPEED_VARIATION = 3f;
     private static final int WIDTH = 64;
     private static final int HEIGHT = 64;
-    private static final float ENEMY_BOMBER_EXPLOSION_WITHIN = 200.0f;
     private static final String ATLAS_NAME = "enemy_bomber";
     private static final float FRAME_DURATION = 0.2f;
 
     private static Animation<TextureRegion> animation;
-    private static Sound explosionSound;
 
     static {
         animation = new Animation<>(
@@ -35,10 +33,8 @@ public final class EnemyBomber extends Enemy {
                 GameMain.getGameAtlas().findRegions(ATLAS_NAME),
                 Animation.PlayMode.LOOP
         );
-        explosionSound = Gdx.audio.newSound(Gdx.files.internal("sounds/shoot.wav"));
     }
 
-    private TextureRegion currentFrame;
     private float frameStateTime = 0;
     private TilePath tilePath;
     private boolean inMovementBetweenTiles = false;
@@ -55,13 +51,12 @@ public final class EnemyBomber extends Enemy {
 
 
     private void explode(Player player) {
-        //explosionSound.play(0.25f);
         player.receiveDamage(2);
         this.setHealth(0);
     }
 
     @Override
-    public void update(Player player, ManagerBullets managerBullets, Map map) {
+    public void update(Player player, ManagerEnemies managerEnemies, ManagerBullets managerBullets, Map map) {
         if (player.getHitBox().overlaps(new Rectangle(this.x, this.y, this.width, this.height))) {
             explode(player);
         }
@@ -73,13 +68,13 @@ public final class EnemyBomber extends Enemy {
         Tile startTile = map.getMapArray()[startTileIndexY][startTileIndexX];
         Tile endTile = map.getMapArray()[endTileIndexY][endTileIndexX];
 
-        if (inMovementBetweenTiles == false) {
+        if (!inMovementBetweenTiles) {
             // Find new path for this entity and hold it in tilePath
             tilePath.clear();
             boolean pathFound = map.searchPath(startTile, endTile, new HeuristicDistance(map), tilePath);
 
             // If there is no path from enemy to player location finish this update
-            if (pathFound == false) {
+            if (!pathFound) {
                 return;
             } else {
                 inMovementBetweenTiles = true;
@@ -113,35 +108,10 @@ public final class EnemyBomber extends Enemy {
         }
     }
 
-    //Bad attempt of modifying movement
-    public void randomizedMovementY() {
-        Random rand = new Random();
-        int n = rand.nextInt(2) + 1;
-        switch (n) {
-            case 1:
-                this.y += this.speed + SPEED_BASE * 2;
-            case 2:
-                this.y -= this.speed + SPEED_BASE * 2;
-        }
-    }
-
-    public void randomizedMovementX() {
-        Random rand = new Random();
-        int n = rand.nextInt(2) + 1;
-        switch (n) {
-            case 1:
-                this.x += this.speed;
-            case 2:
-                this.x -= this.speed;
-        }
-    }
-
     @Override
     public TextureRegion getCurrentTextureRegion() {
         frameStateTime += Gdx.graphics.getDeltaTime();
-        currentFrame = animation.getKeyFrame(frameStateTime, true);
 
-        return currentFrame;
+        return animation.getKeyFrame(frameStateTime, true);
     }
 }
-

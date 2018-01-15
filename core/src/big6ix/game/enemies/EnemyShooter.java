@@ -1,6 +1,7 @@
 package big6ix.game.enemies;
 
-import big6ix.game.GameMain;
+import big6ix.game.ManagerEnemies;
+import big6ix.game.screens.GameMain;
 import big6ix.game.ManagerBullets;
 import big6ix.game.Player;
 import big6ix.game.Tile;
@@ -39,7 +40,6 @@ public final class EnemyShooter extends Enemy {
         shootingSound = Gdx.audio.newSound(Gdx.files.internal("sounds/shoot.wav"));
     }
 
-    private TextureRegion currentFrame;
     private float frameStateTime = 0;
     private int updatesTimer = 0;
     private int shootingIntervalInUpdates = 60;
@@ -67,7 +67,7 @@ public final class EnemyShooter extends Enemy {
     }
 
     @Override
-    public void update(Player player, ManagerBullets managerBullets, Map map) {
+    public void update(Player player, ManagerEnemies managerEnemies, ManagerBullets managerBullets, Map map) {
         ++updatesTimer;
         if (updatesTimer == shootingIntervalInUpdates) {
             shoot(player, managerBullets);
@@ -81,13 +81,14 @@ public final class EnemyShooter extends Enemy {
         Tile startTile = map.getMapArray()[startTileIndexY][startTileIndexX];
         Tile endTile = map.getMapArray()[endTileIndexY][endTileIndexX];
 
-        if (inMovementBetweenTiles == false) {
+        if (!inMovementBetweenTiles) {
             // Find new path for this entity and hold it in tilePath
             tilePath.clear();
-            boolean pathFound = map.searchPath(startTile, endTile, new HeuristicDistance(map), tilePath);
+            boolean pathFound;
+            pathFound = map.searchPath(startTile, endTile, new HeuristicDistance(map), tilePath);
 
             // If there is no path from enemy to player location finish this update
-            if (pathFound == false) {
+            if (!pathFound) {
                 return;
             } else {
                 inMovementBetweenTiles = true;
@@ -124,8 +125,7 @@ public final class EnemyShooter extends Enemy {
     @Override
     public TextureRegion getCurrentTextureRegion() {
         frameStateTime += Gdx.graphics.getDeltaTime();
-        currentFrame = animation.getKeyFrame(frameStateTime, true);
 
-        return currentFrame;
+        return animation.getKeyFrame(frameStateTime, true);
     }
 }

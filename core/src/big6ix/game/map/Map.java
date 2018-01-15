@@ -1,9 +1,13 @@
 package big6ix.game.map;
 
-import big6ix.game.*;
+import big6ix.game.ManagerEnemies;
+import big6ix.game.Player;
+import big6ix.game.Tile;
 import big6ix.game.pathfinding.HeuristicDistance;
 import big6ix.game.pathfinding.TileConnection;
 import big6ix.game.pathfinding.TilePath;
+import big6ix.game.screens.GameMain;
+import big6ix.game.screens.ScreenGame;
 import big6ix.game.utility.Utilities;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ai.pfa.Connection;
@@ -13,10 +17,12 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Array;
 
-public class Map implements IndexedGraph<Tile> {
+import java.io.Serializable;
 
-    public static final int TILE_WIDTH = 80;
-    public static final int TILE_HEIGHT = 80;
+public class Map implements IndexedGraph<Tile>, Serializable {
+
+    public static final int TILE_WIDTH = 75;
+    public static final int TILE_HEIGHT = 75;
     public static final String ATLAS_WALL_NAME = "wall";
     public static final String ATLAS_FLOOR_NAME_0 = "floor0";
     public static final String ATLAS_FLOOR_NAME_1 = "floor1";
@@ -28,7 +34,7 @@ public class Map implements IndexedGraph<Tile> {
     private MapData mapData;
     private MapState mapState;
     private MapCreator mapCreator;
-    private IndexedAStarPathFinder<Tile> pathFinder;
+    private transient IndexedAStarPathFinder<Tile> pathFinder;
 
     public Map() {
         mapCreator = new MapCreator();
@@ -41,22 +47,25 @@ public class Map implements IndexedGraph<Tile> {
         return mapData.getMapArray();
     }
 
-    public int getRowsAmount() {
-        return mapData.getRowsAmount();
-    }
-
     public int getColumnsAmount() {
         return mapData.getColumnsAmount();
     }
 
+    /**
+     * Needs to be used if map was created not using constructor. For example by serialization.
+     */
+    public void initializePathFinder() {
+        this.pathFinder = new IndexedAStarPathFinder<>(this);
+    }
+
     public void render(SpriteBatch batch, OrthographicCamera camera) {
         // Map rendering optimized to only display map tiles within camera visibility
-        int amountOfTilesToDrawHorizontally = (int) ((Gdx.graphics.getWidth() / TILE_WIDTH) * ScreenGame.CAMERA_INITIAL_ZOOM) + 1;
-        int amountOfTilesToDrawVertically = (int) ((Gdx.graphics.getHeight() / TILE_HEIGHT) * ScreenGame.CAMERA_INITIAL_ZOOM) + 1;
-        int leftBoundIndexX = Math.max((int) camera.position.x / TILE_WIDTH - amountOfTilesToDrawHorizontally / 2, 0);
-        int leftBoundIndexY = Math.max((int) camera.position.y / TILE_HEIGHT - amountOfTilesToDrawVertically / 2, 0);
-        int rightBoundIndexX = Math.min(amountOfTilesToDrawHorizontally + leftBoundIndexX, getColumnsAmount() - 1);
-        int rightBoundIndexY = Math.min(amountOfTilesToDrawVertically + leftBoundIndexY, getRowsAmount() - 1);
+        int amountOfTilesToDrawHorizontally = (int) ((Gdx.graphics.getWidth() / TILE_WIDTH) * ScreenGame.CAMERA_INITIAL_ZOOM) + 3;
+        int amountOfTilesToDrawVertically = (int) ((Gdx.graphics.getHeight() / TILE_HEIGHT) * ScreenGame.CAMERA_INITIAL_ZOOM) + 3;
+        int leftBoundIndexX = Math.max((int) camera.position.x / TILE_WIDTH - amountOfTilesToDrawHorizontally / 2 - 2, 0);
+        int leftBoundIndexY = Math.max((int) camera.position.y / TILE_HEIGHT - amountOfTilesToDrawVertically / 2 - 2, 0);
+        int rightBoundIndexX = Math.min(amountOfTilesToDrawHorizontally + leftBoundIndexX + 1, mapData.getColumnsAmount() - 1);
+        int rightBoundIndexY = Math.min(amountOfTilesToDrawVertically + leftBoundIndexY + 1, mapData.getRowsAmount() - 1);
 
         for (int i = leftBoundIndexY; i <= rightBoundIndexY; ++i) {
             for (int j = leftBoundIndexX; j <= rightBoundIndexX; ++j) {
@@ -109,20 +118,20 @@ public class Map implements IndexedGraph<Tile> {
             if (tileIndexY > 0 && getMapArray()[tileIndexY - 1][tileIndexX].isWalkable()) {
                 connections.add(new TileConnection(fromNode, getMapArray()[tileIndexY - 1][tileIndexX], this));
             }
-            if (tileIndexY < (getRowsAmount() - 1) && getMapArray()[tileIndexY + 1][tileIndexX].isWalkable()) {
+            if (tileIndexY < (mapData.getRowsAmount() - 1) && getMapArray()[tileIndexY + 1][tileIndexX].isWalkable()) {
                 connections.add(new TileConnection(fromNode, getMapArray()[tileIndexY + 1][tileIndexX], this));
             }
             // Allow diagonal movement
             if (tileIndexX > 0 && tileIndexY > 0 && getMapArray()[tileIndexY - 1][tileIndexX - 1].isWalkable()) {
                 connections.add(new TileConnection(fromNode, getMapArray()[tileIndexY - 1][tileIndexX - 1], this));
             }
-            if (tileIndexX > 0 && tileIndexY < (getRowsAmount() - 1) && getMapArray()[tileIndexY + 1][tileIndexX - 1].isWalkable()) {
+            if (tileIndexX > 0 && tileIndexY < (mapData.getRowsAmount() - 1) && getMapArray()[tileIndexY + 1][tileIndexX - 1].isWalkable()) {
                 connections.add(new TileConnection(fromNode, getMapArray()[tileIndexY + 1][tileIndexX - 1], this));
             }
             if (tileIndexX < (getColumnsAmount() - 1) && tileIndexY > 0 && getMapArray()[tileIndexY - 1][tileIndexX + 1].isWalkable()) {
                 connections.add(new TileConnection(fromNode, getMapArray()[tileIndexY - 1][tileIndexX + 1], this));
             }
-            if (tileIndexX < (getColumnsAmount() - 1) && tileIndexY < (getRowsAmount() - 1) && getMapArray()[tileIndexY + 1][tileIndexX + 1].isWalkable()) {
+            if (tileIndexX < (getColumnsAmount() - 1) && tileIndexY < (mapData.getRowsAmount() - 1) && getMapArray()[tileIndexY + 1][tileIndexX + 1].isWalkable()) {
                 connections.add(new TileConnection(fromNode, getMapArray()[tileIndexY + 1][tileIndexX + 1], this));
             }
         }
