@@ -77,7 +77,6 @@ public class MapCreator implements Serializable {
                         return root;
                     }
                 }
-
                 currentHeightOfTree++;
             }
             currentHeightOfTree = 1;
@@ -148,9 +147,8 @@ public class MapCreator implements Serializable {
                 newTreeNode.addConnectingDoor(new Pair(leafDoorIndices));
                 currentNode.addLeaf(newTreeNode, parentDoorIndices);
                 addedRoomsAmount++;
+                availableDoors.remove(randomDoorIndex);
             }
-
-            availableDoors.remove(randomDoorIndex);
         }
 
         return addedRoomsAmount;

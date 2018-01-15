@@ -1,5 +1,7 @@
-package big6ix.game;
+package big6ix.game.bullets;
 
+import big6ix.game.ManagerEnemies;
+import big6ix.game.Player;
 import big6ix.game.bullets.Bullet;
 import big6ix.game.enemies.Enemy;
 import big6ix.game.map.Map;

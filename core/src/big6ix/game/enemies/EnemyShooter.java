@@ -2,7 +2,7 @@ package big6ix.game.enemies;
 
 import big6ix.game.ManagerEnemies;
 import big6ix.game.screens.GameMain;
-import big6ix.game.ManagerBullets;
+import big6ix.game.bullets.ManagerBullets;
 import big6ix.game.Player;
 import big6ix.game.Tile;
 import big6ix.game.bullets.Bullet;
@@ -10,6 +10,7 @@ import big6ix.game.bullets.BulletBasic;
 import big6ix.game.map.Map;
 import big6ix.game.pathfinding.HeuristicDistance;
 import big6ix.game.pathfinding.TilePath;
+import big6ix.game.utility.Utilities;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.Animation;
@@ -23,6 +24,8 @@ public final class EnemyShooter extends Enemy {
     private static final float SPEED_BASE = 0.7f;
     private static final float SPEED_VARIATION = 0.8f;
     private static final int MINIMAL_DISTANCE_FROM_PLAYER = 5;
+    private static final int SHOOTING_SPEED_BASE = 50;
+    private static final int SHOOTING_SPEED_VARIATION = 30;
     private static final int WIDTH = 64;
     private static final int HEIGHT = 64;
     private static final String ATLAS_NAME = "enemy_shooter";
@@ -42,7 +45,7 @@ public final class EnemyShooter extends Enemy {
 
     private float frameStateTime = 0;
     private int updatesTimer = 0;
-    private int shootingIntervalInUpdates = 60;
+    private int shootingIntervalInUpdates = SHOOTING_SPEED_BASE + Utilities.generateRandomInt(0, SHOOTING_SPEED_VARIATION);
     private TilePath tilePath;
     private boolean inMovementBetweenTiles = false;
 
@@ -57,7 +60,7 @@ public final class EnemyShooter extends Enemy {
     }
 
     private void shoot(Player player, ManagerBullets managerBullets) {
-        shootingSound.play(0.15f);
+        shootingSound.play(GameMain.getPreferences().getSoundEffectsVolume());
         Bullet bulletBasic = new BulletBasic(
                 false,
                 this.x + 32, this.y + 32,

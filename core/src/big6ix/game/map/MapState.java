@@ -29,6 +29,10 @@ public class MapState implements Serializable {
         roomsCompletionStatuses = new boolean[mapData.getRooms().size()];
     }
 
+    public boolean[] getRoomCompletionStatus() {
+        return roomsCompletionStatuses;
+    }
+
     public void update(ManagerEnemies managerEnemies, Player player, GameMain gameMain) {
         if (inFight) {
             if (checkIfAllEnemiesEliminated(managerEnemies)) {

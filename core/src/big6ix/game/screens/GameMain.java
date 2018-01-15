@@ -1,7 +1,6 @@
 package big6ix.game.screens;
 
 import big6ix.game.BigPreferences;
-import big6ix.game.Player;
 import big6ix.game.map.Map;
 import big6ix.game.utility.Pair;
 import com.badlogic.gdx.Game;
@@ -60,8 +59,8 @@ public class GameMain extends Game {
         screenGame.initializeGame();
     }
 
-    public void initializeGame(Map map, Pair playerPosition) {
-        screenGame.initializeGame(map, playerPosition);
+    public void initializeGame(Map map, Pair playerPosition, Integer playerHealth) {
+        screenGame.initializeGame(map, playerPosition, playerHealth);
     }
 
     public void activateGameScreen() {

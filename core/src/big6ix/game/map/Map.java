@@ -18,6 +18,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Array;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 public class Map implements IndexedGraph<Tile>, Serializable {
 
@@ -43,12 +44,24 @@ public class Map implements IndexedGraph<Tile>, Serializable {
         pathFinder = new IndexedAStarPathFinder<>(this);
     }
 
-    public Tile[][] getMapArray() {
-        return mapData.getMapArray();
+    public int getRowsAmount() {
+        return mapData.getRowsAmount();
     }
 
     public int getColumnsAmount() {
         return mapData.getColumnsAmount();
+    }
+
+    public Tile[][] getMapArray() {
+        return mapData.getMapArray();
+    }
+
+    public ArrayList<Room> getRooms() {
+        return mapData.getRooms();
+    }
+
+    public boolean[] getRoomsCompletionStatuses() {
+        return mapState.getRoomCompletionStatus();
     }
 
     /**

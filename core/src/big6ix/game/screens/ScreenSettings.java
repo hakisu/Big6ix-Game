@@ -98,6 +98,8 @@ public class ScreenSettings extends ScreenAdapter {
             if ((amountOfRoomsToCreate = Integer.parseInt(roomsAmountTextField.getText())) > 0 && amountOfRoomsToCreate < 2000) {
                 GameMain.getPreferences().setRoomsAmout(amountOfRoomsToCreate);
                 gameMain.activateMainMenuScreen();
+            } else {
+                roomsAmountTextField.setText("Out of range.");
             }
         } catch (NumberFormatException e) {
             roomsAmountTextField.setText("Invalid input!");

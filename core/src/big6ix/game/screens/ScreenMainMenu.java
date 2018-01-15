@@ -1,6 +1,5 @@
 package big6ix.game.screens;
 
-import big6ix.game.Player;
 import big6ix.game.map.Map;
 import big6ix.game.utility.Pair;
 import com.badlogic.gdx.Gdx;
@@ -65,10 +64,14 @@ public class ScreenMainMenu extends ScreenAdapter {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 intro.stop();
+                // Restore game state from serialized HashMap of game data
                 try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(GameMain.PATH_TO_SAVE_FILE))) {
                     // noinspection unchecked
                     HashMap<String, Object> savedGame = (HashMap<String, Object>) in.readObject();
-                    gameMain.initializeGame((Map) savedGame.get("map"), (Pair) savedGame.get("playerPosition"));
+                    Map loadedMap = (Map) savedGame.get("map");
+                    Pair loadedPlayerPosition = (Pair) savedGame.get("playerPosition");
+                    Integer loadedPlayerHealth = (Integer) savedGame.get("playerHealth");
+                    gameMain.initializeGame(loadedMap, loadedPlayerPosition, loadedPlayerHealth);
                 } catch (IOException | ClassNotFoundException e) {
                     e.printStackTrace();
                 }

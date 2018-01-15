@@ -1,6 +1,6 @@
 package big6ix.game.enemies;
 
-import big6ix.game.ManagerBullets;
+import big6ix.game.bullets.ManagerBullets;
 import big6ix.game.ManagerEnemies;
 import big6ix.game.Player;
 import big6ix.game.map.Map;
@@ -34,10 +34,6 @@ public abstract class Enemy {
 
     public int getHeight() {
         return height;
-    }
-
-    public float getSpeed() {
-        return speed;
     }
 
     public int getHealth() {
