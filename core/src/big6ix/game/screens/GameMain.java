@@ -13,16 +13,21 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 public class GameMain extends Game {
 
     public static final String PATH_TO_SAVE_FILE = "data/game.save";
     public static final String UI_SKINS_ATLAS_NAME = "skins/uiskin.atlas";
     public static final String UI_SKINS_JSON_NAME = "skins/uiskin.json";
+    public static final int FONT_SIZE = 20;
     // A single batch can draw no more than 8191 sprites. Otherwise it will throw IllegalArgumentException
     private static final int BATCH_MAX_NUMBER_OF_SPRITES = 2000;
     private static final int CURSOR_X_HOTSPOT = 16;
     private static final int CURSOR_Y_HOTSPOT = 16;
-
     private static TextureAtlas gameAtlas;
     private static BigPreferences preferences;
 
@@ -45,6 +50,20 @@ public class GameMain extends Game {
 
     public static BigPreferences getPreferences() {
         return preferences;
+    }
+
+    public static void removeSaveFile() {
+        // Delete saved game state if it exists
+        Path path = Paths.get(GameMain.PATH_TO_SAVE_FILE);
+        try {
+            Files.deleteIfExists(path);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public BitmapFont getFont() {
+        return font;
     }
 
     public ScreenGame getScreenGame() {
@@ -92,8 +111,8 @@ public class GameMain extends Game {
 
         FreeTypeFontGenerator fontGenerator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/OpenSans-Regular.ttf"));
         FreeTypeFontParameter fontParameter = new FreeTypeFontParameter();
-        fontParameter.size = 50;
-        fontParameter.flip = false;
+        fontParameter.size = FONT_SIZE;
+        fontParameter.flip = true;
         font = fontGenerator.generateFont(fontParameter);
         fontGenerator.dispose();
 

@@ -1,8 +1,7 @@
 package big6ix.game.bullets;
 
-import big6ix.game.ManagerEnemies;
+import big6ix.game.enemies.ManagerEnemies;
 import big6ix.game.Player;
-import big6ix.game.bullets.Bullet;
 import big6ix.game.enemies.Enemy;
 import big6ix.game.map.Map;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -20,7 +19,6 @@ public class ManagerBullets {
     private ManagerEnemies managerEnemies;
 
     private Array<Bullet> bullets;
-    private Iterator<Bullet> bulletsIterator;
 
     public ManagerBullets(Player player, Map map) {
         this.bullets = new Array<>(false, INITIAL_BULLETS_CAPACITY);
@@ -34,7 +32,8 @@ public class ManagerBullets {
 
     public void update() {
         Bullet currentBullet;
-        bulletsIterator = bullets.iterator();
+        Iterator<Bullet> bulletsIterator = bullets.iterator();
+
         while (bulletsIterator.hasNext()) {
             currentBullet = bulletsIterator.next();
             boolean bulletStillExists = true;

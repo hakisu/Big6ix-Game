@@ -1,7 +1,7 @@
-package big6ix.game;
+package big6ix.game.enemies;
 
+import big6ix.game.Player;
 import big6ix.game.bullets.ManagerBullets;
-import big6ix.game.enemies.Enemy;
 import big6ix.game.map.Map;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Array;

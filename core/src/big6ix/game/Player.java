@@ -14,8 +14,8 @@ import com.badlogic.gdx.math.Vector3;
 
 public class Player {
 
+    private static final int INITIAL_HEALTH = 10;
     private static final int SPEED = 6;
-    private static final int INITIAL_HEALTH = 3;
     private static final int HIT_BOX_WIDTH = 35;
     private static final int HIT_BOX_HEIGHT = 60;
     private static final int HIT_BOX_X = 14;
@@ -58,7 +58,7 @@ public class Player {
         this.speed = SPEED;
         this.health = INITIAL_HEALTH;
 
-        stepSound = Gdx.audio.newSound(Gdx.files.internal("sounds/step23.mp3"));
+        stepSound = Gdx.audio.newSound(Gdx.files.internal("sounds/step.mp3"));
     }
 
     public Rectangle getHitBox() {
@@ -79,6 +79,14 @@ public class Player {
 
     public int getHeight() {
         return (int) hitBox.height;
+    }
+
+    public int getHealth() {
+        return health;
+    }
+
+    public void setHealth(int health) {
+        this.health = health;
     }
 
     public int calculateIndexX() {
@@ -121,14 +129,6 @@ public class Player {
         }
 
         batch.draw(this.currentFrame, this.hitBox.x - HIT_BOX_X, this.hitBox.y - HIT_BOX_Y, GRAPHICAL_WIDTH, GRAPHICAL_HEIGHT);
-    }
-
-    public int getHealth() {
-        return health;
-    }
-
-    public void setHealth(int health) {
-        this.health = health;
     }
 
     public void update(Map map, GameMain gameMain) {
@@ -181,7 +181,7 @@ public class Player {
         }
 
         if (!isPlayerStillAlive()) {
-            gameMain.getScreenGame().exitGameScreen();
+            gameMain.getScreenGame().executeGameOver();
         }
     }
 

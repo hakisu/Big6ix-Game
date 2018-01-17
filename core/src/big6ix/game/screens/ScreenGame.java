@@ -1,9 +1,10 @@
 package big6ix.game.screens;
 
-import big6ix.game.bullets.ManagerBullets;
-import big6ix.game.ManagerEnemies;
+import big6ix.game.HUD;
 import big6ix.game.Player;
 import big6ix.game.bullets.BulletBasic;
+import big6ix.game.bullets.ManagerBullets;
+import big6ix.game.enemies.ManagerEnemies;
 import big6ix.game.map.Map;
 import big6ix.game.map.MiniMap;
 import big6ix.game.map.Room;
@@ -42,6 +43,9 @@ public class ScreenGame extends ScreenAdapter {
     private Player player;
     private Map map;
     private MiniMap miniMap;
+    private HUD hud;
+
+    // Game cameras
     private OrthographicCamera camera;
     private OrthographicCamera uiCamera;
     private OrthographicCamera miniMapCamera;
@@ -49,8 +53,11 @@ public class ScreenGame extends ScreenAdapter {
     // Time management fields
     private long oldTime;
     private long timeAccumulator = 0;
+
+    // Logic control fields
     private boolean gameRunning = true;
     private boolean miniMapActive = false;
+    private boolean gameInitialized = false;
 
     // Sounds and music
     private Music mainTheme;
@@ -60,6 +67,7 @@ public class ScreenGame extends ScreenAdapter {
         this.gameMain = gameMain;
         this.shapeRenderer = new ShapeRenderer();
         miniMap = new MiniMap();
+        hud = new HUD();
         shootingSound = Gdx.audio.newSound(Gdx.files.internal("sounds/shoot.wav"));
 
         // Music
@@ -67,12 +75,17 @@ public class ScreenGame extends ScreenAdapter {
         mainTheme.setLooping(true);
         mainTheme.setVolume(GameMain.getPreferences().getMusicVolume());
 
+        // Set up game cameras
         camera = new OrthographicCamera();
         camera.setToOrtho(true, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         uiCamera = new OrthographicCamera();
         uiCamera.setToOrtho(true, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         miniMapCamera = new OrthographicCamera();
         miniMapCamera.setToOrtho(true, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+    }
+
+    public boolean isGameInitialized() {
+        return gameInitialized;
     }
 
     private void update() {
@@ -90,7 +103,6 @@ public class ScreenGame extends ScreenAdapter {
         camera.position.x = player.getX() + player.getWidth() / 2;
         camera.position.y = player.getY() + player.getWidth() / 2;
         camera.zoom = CAMERA_INITIAL_ZOOM;
-
         camera.update();
         gameMain.batch.setProjectionMatrix(camera.combined);
 
@@ -102,9 +114,10 @@ public class ScreenGame extends ScreenAdapter {
         player.render(gameMain.batch, this.camera);
         managerBullets.render(gameMain.batch);
 
-        // Before drawing ui we need to change camera used by batch to uiCamera
+        // Before drawing hud we need to change camera used by batch to uiCamera
+        uiCamera.update();
         gameMain.batch.setProjectionMatrix(uiCamera.combined);
-
+        hud.render(gameMain, player, map);
 
         // Ending drawing in batch
         gameMain.batch.end();
@@ -135,6 +148,7 @@ public class ScreenGame extends ScreenAdapter {
                 managerBullets.addBullet(bulletBasic);
             }
         } else {
+            // Handle input for visible minimap
             if (Gdx.input.isKeyPressed(Input.Keys.W)) {
                 miniMapCamera.position.y -= MINIMAP_CAMERA_MOVE_SPEED;
             }
@@ -150,7 +164,8 @@ public class ScreenGame extends ScreenAdapter {
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
-            exitGameScreen();
+            this.mainTheme.stop();
+            this.gameMain.activateMainMenuScreen();
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.TAB)) {
             gameRunning = !gameRunning;
@@ -158,8 +173,10 @@ public class ScreenGame extends ScreenAdapter {
         }
     }
 
-    public void exitGameScreen() {
+    public void executeGameOver() {
+        GameMain.removeSaveFile();
         this.mainTheme.stop();
+        this.gameInitialized = false;
         this.gameMain.activateMainMenuScreen();
     }
 
@@ -176,6 +193,7 @@ public class ScreenGame extends ScreenAdapter {
         managerBullets = new ManagerBullets(this.player, this.map);
         managerEnemies = new ManagerEnemies(this.player, this.managerBullets, this.map);
         managerBullets.setManagerEnemies(managerEnemies);
+        gameInitialized = true;
     }
 
     /**
@@ -193,6 +211,8 @@ public class ScreenGame extends ScreenAdapter {
         this.managerBullets = new ManagerBullets(this.player, this.map);
         this.managerEnemies = new ManagerEnemies(this.player, this.managerBullets, this.map);
         this.managerBullets.setManagerEnemies(managerEnemies);
+        gameInitialized = true;
+
     }
 
     @Override

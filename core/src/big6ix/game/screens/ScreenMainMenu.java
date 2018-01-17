@@ -63,24 +63,28 @@ public class ScreenMainMenu extends ScreenAdapter {
         resumeButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                intro.stop();
-                // Restore game state from serialized HashMap of game data
-                try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(GameMain.PATH_TO_SAVE_FILE))) {
-                    // noinspection unchecked
-                    HashMap<String, Object> savedGame = (HashMap<String, Object>) in.readObject();
-                    Map loadedMap = (Map) savedGame.get("map");
-                    Pair loadedPlayerPosition = (Pair) savedGame.get("playerPosition");
-                    Integer loadedPlayerHealth = (Integer) savedGame.get("playerHealth");
-                    gameMain.initializeGame(loadedMap, loadedPlayerPosition, loadedPlayerHealth);
-                } catch (IOException | ClassNotFoundException e) {
-                    e.printStackTrace();
+                if (!gameMain.getScreenGame().isGameInitialized()) {
+                    // Restore game state from serialized HashMap of game data
+                    try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(GameMain.PATH_TO_SAVE_FILE))) {
+                        // noinspection unchecked
+                        HashMap<String, Object> savedGame = (HashMap<String, Object>) in.readObject();
+                        Map loadedMap = (Map) savedGame.get("map");
+                        Pair loadedPlayerPosition = (Pair) savedGame.get("playerPosition");
+                        Integer loadedPlayerHealth = (Integer) savedGame.get("playerHealth");
+                        gameMain.initializeGame(loadedMap, loadedPlayerPosition, loadedPlayerHealth);
+                    } catch (IOException | ClassNotFoundException e) {
+                        return;
+                    }
                 }
+                intro.stop();
                 gameMain.activateGameScreen();
             }
         });
         playButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
+                GameMain.removeSaveFile();
+
                 intro.stop();
                 game.initializeGame();
                 game.activateGameScreen();

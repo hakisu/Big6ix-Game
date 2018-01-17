@@ -1,6 +1,6 @@
 package big6ix.game.map;
 
-import big6ix.game.ManagerEnemies;
+import big6ix.game.enemies.ManagerEnemies;
 import big6ix.game.Player;
 import big6ix.game.TileType;
 import big6ix.game.enemies.EnemyCreator;
@@ -55,7 +55,7 @@ public class MapState implements Serializable {
             }
         }
         if (checkIfLevelIsCompleted()) {
-            gameMain.getScreenGame().exitGameScreen();
+            gameMain.getScreenGame().executeGameOver();
         }
     }
 

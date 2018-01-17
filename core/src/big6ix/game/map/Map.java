@@ -1,6 +1,6 @@
 package big6ix.game.map;
 
-import big6ix.game.ManagerEnemies;
+import big6ix.game.enemies.ManagerEnemies;
 import big6ix.game.Player;
 import big6ix.game.Tile;
 import big6ix.game.pathfinding.HeuristicDistance;

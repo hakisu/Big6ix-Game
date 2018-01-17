@@ -20,7 +20,7 @@ bullet_hostile
   index: -1
 crosshair
   rotate: false
-  xy: 200, 232
+  xy: 266, 298
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
@@ -123,6 +123,13 @@ enemy_shooter
   orig: 64, 64
   offset: 0, 0
   index: 3
+life_icon
+  rotate: false
+  xy: 68, 200
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
 door
   rotate: false
   xy: 68, 530
@@ -167,119 +174,119 @@ floor_white
   index: -1
 wall
   rotate: false
-  xy: 134, 134
+  xy: 200, 200
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 player_down
   rotate: false
-  xy: 68, 200
-  size: 64, 64
-  orig: 64, 64
-  offset: 0, 0
-  index: 0
-player_down
-  rotate: false
   xy: 134, 266
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
-  index: 1
+  index: 0
 player_down
   rotate: false
   xy: 200, 332
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
-  index: 2
+  index: 1
 player_down
   rotate: false
   xy: 266, 398
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
-  index: 3
-player_left
+  index: 2
+player_down
   rotate: false
   xy: 332, 464
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
-  index: 0
+  index: 3
 player_left
   rotate: false
   xy: 398, 530
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
-  index: 1
+  index: 0
 player_left
   rotate: false
   xy: 2, 68
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
-  index: 2
+  index: 1
 player_left
   rotate: false
   xy: 68, 134
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
-  index: 3
-player_right
+  index: 2
+player_left
   rotate: false
   xy: 134, 200
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
-  index: 0
+  index: 3
 player_right
   rotate: false
   xy: 200, 266
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
-  index: 1
+  index: 0
 player_right
   rotate: false
   xy: 266, 332
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
-  index: 2
+  index: 1
 player_right
   rotate: false
   xy: 332, 398
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
-  index: 3
-player_up
+  index: 2
+player_right
   rotate: false
   xy: 398, 464
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
-  index: 0
+  index: 3
 player_up
   rotate: false
   xy: 464, 530
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
-  index: 1
+  index: 0
 player_up
   rotate: false
   xy: 2, 2
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
-  index: 2
+  index: 1
 player_up
   rotate: false
   xy: 68, 68
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: 2
+player_up
+  rotate: false
+  xy: 134, 134
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
