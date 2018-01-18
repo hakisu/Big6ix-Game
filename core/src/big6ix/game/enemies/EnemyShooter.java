@@ -71,7 +71,7 @@ public final class EnemyShooter extends Enemy {
     @Override
     public void update(Player player, ManagerEnemies managerEnemies, ManagerBullets managerBullets, Map map) {
         ++updatesTimer;
-        if (updatesTimer == shootingIntervalInUpdates) {
+        if (updatesTimer >= shootingIntervalInUpdates) {
             shoot(player, managerBullets);
             updatesTimer = 0;
         }

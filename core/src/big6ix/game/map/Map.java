@@ -1,8 +1,8 @@
 package big6ix.game.map;
 
-import big6ix.game.enemies.ManagerEnemies;
 import big6ix.game.Player;
 import big6ix.game.Tile;
+import big6ix.game.enemies.ManagerEnemies;
 import big6ix.game.pathfinding.HeuristicDistance;
 import big6ix.game.pathfinding.TileConnection;
 import big6ix.game.pathfinding.TilePath;
@@ -42,6 +42,10 @@ public class Map implements IndexedGraph<Tile>, Serializable {
         mapData = mapCreator.generateMapData();
         mapState = new MapState(mapData);
         pathFinder = new IndexedAStarPathFinder<>(this);
+    }
+
+    public Room getCurrentOccupiedRoom() {
+        return mapState.getCurrentOccupiedRoom();
     }
 
     public int getRowsAmount() {

@@ -1,6 +1,5 @@
 package big6ix.game.map;
 
-import big6ix.game.TileType;
 import big6ix.game.utility.Pair;
 import big6ix.game.utility.Utilities;
 
@@ -8,12 +7,11 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Room implements Serializable{
+public class Room implements Serializable {
 
     private RoomShape roomShape;
     private int x;
     private int y;
-    private boolean completed;
     private ArrayList<Pair> doors;
 
     public Room(RoomShape roomShape) {
@@ -41,10 +39,6 @@ public class Room implements Serializable{
         return doors;
     }
 
-    public TileType[][] getRoomArray() {
-        return roomShape.getRoomArray();
-    }
-
     public int getRowsAmount() {
         return roomShape.getRowsAmount();
     }
@@ -62,7 +56,7 @@ public class Room implements Serializable{
         for (int i = 0; i < roomShape.getRowsAmount(); ++i) {
             for (int j = 0; j < roomShape.getColumnsAmount(); ++j) {
                 if (roomShape.getRoomArray()[i][j].isWalkable()) {
-                    walkableTilesIndices.add(new Pair(j + x, i + y));
+                    walkableTilesIndices.add(new Pair(j + this.x, i + this.y));
                 }
             }
         }

@@ -264,7 +264,7 @@ public class ScreenGame extends ScreenAdapter {
     @Override
     public void dispose() {
         HashMap<String, Object> savedGame = new HashMap<>();
-        if (map != null) {
+        if (map != null && this.gameInitialized) {
             try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(GameMain.PATH_TO_SAVE_FILE))) {
                 savedGame.put("map", this.map);
                 savedGame.put("playerPosition", new Pair((int) this.player.getX() / Map.TILE_WIDTH, (int) this.player.getY() / Map.TILE_HEIGHT));

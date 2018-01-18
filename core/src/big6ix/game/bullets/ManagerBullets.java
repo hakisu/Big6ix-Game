@@ -42,12 +42,13 @@ public class ManagerBullets {
                 bulletsIterator.remove();
                 bulletStillExists = false;
             }
-            // Performs action after Bullet hits player
+            // Performs action after bullet hits player
             if (bulletStillExists && checkPlayerCollision(currentBullet)) {
-                player.receiveDamage(1);
+                player.receiveDamage(currentBullet.getDamagePower());
                 bulletsIterator.remove();
                 bulletStillExists = false;
             }
+            // Performs action after bullet hits enemy
             if (bulletStillExists && checkEnemyCollision(currentBullet)) {
                 bulletsIterator.remove();
             }
@@ -76,7 +77,6 @@ public class ManagerBullets {
                 return true;
             }
         }
-
         return false;
     }
 
@@ -93,7 +93,7 @@ public class ManagerBullets {
                 float distance = (float) Math.sqrt(distanceX * distanceX + distanceY * distanceY);
                 // Check if there is collision between bullet and specific enemy
                 if (distance <= (bullet.getWidth() / 2 + currentEnemy.getWidth() / 2)) {
-                    currentEnemy.setHealth(currentEnemy.getHealth() - bullet.getDamagePower());
+                    currentEnemy.receiveDamage(bullet.getDamagePower());
                     return true;
                 }
             }

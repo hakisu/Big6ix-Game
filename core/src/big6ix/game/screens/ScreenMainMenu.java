@@ -63,6 +63,7 @@ public class ScreenMainMenu extends ScreenAdapter {
         resumeButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
+                boolean saveLoaded = false;
                 if (!gameMain.getScreenGame().isGameInitialized()) {
                     // Restore game state from serialized HashMap of game data
                     try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(GameMain.PATH_TO_SAVE_FILE))) {
@@ -72,12 +73,17 @@ public class ScreenMainMenu extends ScreenAdapter {
                         Pair loadedPlayerPosition = (Pair) savedGame.get("playerPosition");
                         Integer loadedPlayerHealth = (Integer) savedGame.get("playerHealth");
                         gameMain.initializeGame(loadedMap, loadedPlayerPosition, loadedPlayerHealth);
+                        saveLoaded = true;
                     } catch (IOException | ClassNotFoundException e) {
+                        // If there is no save file do nothing
                         return;
                     }
                 }
-                intro.stop();
-                gameMain.activateGameScreen();
+                GameMain.removeSaveFile();
+                if (saveLoaded || game.getScreenGame().isGameInitialized()) {
+                    intro.stop();
+                    gameMain.activateGameScreen();
+                }
             }
         });
         playButton.addListener(new ChangeListener() {

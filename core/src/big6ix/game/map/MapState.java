@@ -1,9 +1,9 @@
 package big6ix.game.map;
 
-import big6ix.game.enemies.ManagerEnemies;
 import big6ix.game.Player;
 import big6ix.game.TileType;
 import big6ix.game.enemies.EnemyCreator;
+import big6ix.game.enemies.ManagerEnemies;
 import big6ix.game.screens.GameMain;
 import big6ix.game.utility.Pair;
 import big6ix.game.utility.Utilities;
@@ -13,6 +13,8 @@ import java.util.List;
 
 public class MapState implements Serializable {
 
+    private static final int ENEMIES_PER_ROOM_MIN = 4;
+    private static final int ENEMIES_PER_ROOM_MAX = 7;
     private static final int DISTANCE_FOR_DOOR_CLOSING = 2;
 
     private boolean inFight;
@@ -20,13 +22,16 @@ public class MapState implements Serializable {
     private Room currentOccupiedRoom;
     private int currentOccupiedRoomIndex;
     private boolean[] roomsCompletionStatuses;
-
     MapState(MapData mapData) {
         this.inFight = false;
         this.mapData = mapData;
         currentOccupiedRoom = null;
         currentOccupiedRoomIndex = 0;
         roomsCompletionStatuses = new boolean[mapData.getRooms().size()];
+    }
+
+    public Room getCurrentOccupiedRoom() {
+        return currentOccupiedRoom;
     }
 
     public boolean[] getRoomCompletionStatus() {
@@ -45,7 +50,7 @@ public class MapState implements Serializable {
             if (currentOccupiedRoom != null && !roomsCompletionStatuses[currentOccupiedRoomIndex]) {
                 closeDoors();
                 inFight = true;
-                int numberOfEnemies = Utilities.generateRandomInt(2, 5);
+                int numberOfEnemies = Utilities.generateRandomInt(ENEMIES_PER_ROOM_MIN, ENEMIES_PER_ROOM_MAX);
                 int currentNumberOfEnemies = 0;
                 while (currentNumberOfEnemies < numberOfEnemies) {
                     Pair enemyIndices = currentOccupiedRoom.getRandomWalkableTileIndices();

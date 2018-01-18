@@ -6,287 +6,336 @@ filter: Nearest,Nearest
 repeat: none
 bullet_friendly
   rotate: false
-  xy: 2, 530
+  xy: 2, 564
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 bullet_hostile
   rotate: false
-  xy: 2, 464
+  xy: 2, 498
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 crosshair
   rotate: false
-  xy: 266, 298
+  xy: 2, 2
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
+immortal
+  rotate: false
+  xy: 530, 596
+  size: 64, 32
+  orig: 64, 32
+  offset: 0, 0
+  index: -1
 enemy_bomber
   rotate: false
-  xy: 2, 398
+  xy: 2, 432
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: 0
 enemy_bomber
   rotate: false
-  xy: 68, 464
+  xy: 68, 498
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: 1
 enemy_bomber
   rotate: false
-  xy: 134, 530
+  xy: 134, 564
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: 2
 enemy_bomber
   rotate: false
-  xy: 2, 332
+  xy: 2, 366
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: 3
 enemy_creator
   rotate: false
-  xy: 68, 398
+  xy: 68, 432
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: 0
 enemy_creator
   rotate: false
-  xy: 134, 464
+  xy: 134, 498
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: 1
 enemy_creator
   rotate: false
-  xy: 200, 530
+  xy: 200, 564
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: 2
 enemy_creator
   rotate: false
-  xy: 2, 266
+  xy: 2, 300
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: 3
 enemy_creator
   rotate: false
-  xy: 68, 332
+  xy: 68, 366
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: 4
 enemy_creator
   rotate: false
-  xy: 134, 398
+  xy: 134, 432
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: 5
+enemy_enhancer
+  rotate: false
+  xy: 68, 70
+  size: 22, 30
+  orig: 22, 30
+  offset: 0, 0
+  index: 0
+enemy_enhancer
+  rotate: false
+  xy: 134, 136
+  size: 22, 30
+  orig: 22, 30
+  offset: 0, 0
+  index: 1
 enemy_shooter
   rotate: false
-  xy: 200, 464
+  xy: 200, 498
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: 0
 enemy_shooter
   rotate: false
-  xy: 266, 530
+  xy: 266, 564
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: 1
 enemy_shooter
   rotate: false
-  xy: 2, 200
+  xy: 2, 234
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: 2
 enemy_shooter
   rotate: false
-  xy: 68, 266
+  xy: 68, 300
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: 3
+enemy_teleporter
+  rotate: false
+  xy: 134, 366
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: 0
+enemy_teleporter
+  rotate: false
+  xy: 200, 432
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: 1
+enemy_teleporter
+  rotate: false
+  xy: 266, 498
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: 2
+enemy_teleporter
+  rotate: false
+  xy: 332, 564
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: 3
 life_icon
   rotate: false
-  xy: 68, 200
+  xy: 332, 498
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 door
   rotate: false
-  xy: 68, 530
+  xy: 68, 564
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 floor0
   rotate: false
-  xy: 134, 332
+  xy: 2, 168
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 floor1
   rotate: false
-  xy: 200, 398
+  xy: 68, 234
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 floor2
   rotate: false
-  xy: 266, 464
+  xy: 134, 300
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 floor3
   rotate: false
-  xy: 332, 530
+  xy: 200, 366
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 floor_white
   rotate: false
-  xy: 2, 134
+  xy: 266, 432
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 wall
   rotate: false
-  xy: 200, 200
+  xy: 464, 498
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 player_down
   rotate: false
-  xy: 134, 266
+  xy: 398, 564
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: 0
 player_down
   rotate: false
-  xy: 200, 332
+  xy: 2, 102
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: 1
 player_down
   rotate: false
-  xy: 266, 398
+  xy: 68, 168
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: 2
 player_down
   rotate: false
-  xy: 332, 464
+  xy: 134, 234
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: 3
 player_left
   rotate: false
-  xy: 398, 530
+  xy: 200, 300
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: 0
 player_left
   rotate: false
-  xy: 2, 68
+  xy: 266, 366
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: 1
 player_left
   rotate: false
-  xy: 68, 134
+  xy: 332, 432
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: 2
 player_left
   rotate: false
-  xy: 134, 200
+  xy: 398, 498
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: 3
 player_right
   rotate: false
-  xy: 200, 266
+  xy: 464, 564
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: 0
 player_right
   rotate: false
-  xy: 266, 332
+  xy: 2, 36
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: 1
 player_right
   rotate: false
-  xy: 332, 398
+  xy: 68, 102
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: 2
 player_right
   rotate: false
-  xy: 398, 464
+  xy: 134, 168
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: 3
 player_up
   rotate: false
-  xy: 464, 530
+  xy: 200, 234
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: 0
 player_up
   rotate: false
-  xy: 2, 2
+  xy: 266, 300
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: 1
 player_up
   rotate: false
-  xy: 68, 68
+  xy: 332, 366
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: 2
 player_up
   rotate: false
-  xy: 134, 134
+  xy: 398, 432
   size: 64, 64
   orig: 64, 64
   offset: 0, 0

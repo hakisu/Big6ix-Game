@@ -16,6 +16,7 @@ import java.util.Random;
 
 public final class EnemyBomber extends Enemy {
 
+    private static final int DAMAGE = 2;
     private static final int HEALTH = 2;
     private static final float SPEED_BASE = 1.0f;
     private static final float SPEED_VARIATION = 3f;
@@ -50,8 +51,8 @@ public final class EnemyBomber extends Enemy {
 
 
     private void explode(Player player) {
-        player.receiveDamage(2);
-        this.setHealth(0);
+        player.receiveDamage(DAMAGE);
+        this.health = 0;
     }
 
     @Override

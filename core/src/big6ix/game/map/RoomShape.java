@@ -27,6 +27,7 @@ public class RoomShape implements Serializable {
 
         this.roomArray = new TileType[other.rowsAmount][other.columnsAmount];
         for (int i = 0; i < rowsAmount; i++) {
+            //noinspection ManualArrayCopy
             for (int j = 0; j < columnsAmount; j++) {
                 this.roomArray[i][j] = other.roomArray[i][j];
             }
@@ -69,6 +70,7 @@ public class RoomShape implements Serializable {
             int oldIndexY = currentTileIndices.getIndexY();
             int oldIndexX = currentTileIndices.getIndexX();
 
+            //noinspection SuspiciousNameCombination
             currentTileIndices.setIndexY(oldIndexX);
             currentTileIndices.setIndexX(rowsAmount - oldIndexY - 1);
         }
