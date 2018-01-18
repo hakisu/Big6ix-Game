@@ -14,8 +14,9 @@ import com.badlogic.gdx.math.Vector3;
 
 public class Player {
 
-    private static final int INITIAL_HEALTH = 10;
-    private static final int SPEED = 6;
+    private static final int INITIAL_HEALTH = 6;
+    private static final int SPEED = 7;
+    private static final int INITIAL_ENERGY = 200;
     private static final int HIT_BOX_WIDTH = 35;
     private static final int HIT_BOX_HEIGHT = 60;
     private static final int HIT_BOX_X = 14;
@@ -27,10 +28,14 @@ public class Player {
     private static final String DOWN_ATLAS_NAME = "player_down";
     private static final String UP_ATLAS_NAME = "player_up";
     private static final float FRAME_DURATION = 0.1f;
+    private static final String SOUND_STEP_PATH = "sounds/step.mp3";
+    private static final String SOUND_PLAYER_LOST_PATH = "sounds/player_lost.wav";
 
     private Rectangle hitBox;
     private float speed;
     private int health;
+    private boolean invulnerable;
+    private int energy;
     private boolean inMovement = false;
     private TextureRegion currentFrame;
     private float frameStateTime = 0;
@@ -38,9 +43,13 @@ public class Player {
     private Animation<TextureRegion> animationLeft;
     private Animation<TextureRegion> animationUp;
     private Animation<TextureRegion> animationRight;
-    private Sound stepSound;
+
     private float soundLength = 0.35f;
     private float timeToNextSound = soundLength;
+
+    // Sounds
+    private Sound stepSound;
+    private Sound playerLostSound;
 
     public Player(int tileIndexX, int tileIndexY) {
         animationDown = new Animation<>(FRAME_DURATION, GameMain.getGameAtlas().findRegions(DOWN_ATLAS_NAME), Animation.PlayMode.LOOP);
@@ -57,8 +66,10 @@ public class Player {
 
         this.speed = SPEED;
         this.health = INITIAL_HEALTH;
+        this.energy = INITIAL_ENERGY;
 
-        stepSound = Gdx.audio.newSound(Gdx.files.internal("sounds/step.mp3"));
+        stepSound = Gdx.audio.newSound(Gdx.files.internal(SOUND_STEP_PATH));
+        playerLostSound = Gdx.audio.newSound(Gdx.files.internal(SOUND_PLAYER_LOST_PATH));
     }
 
     public Rectangle getHitBox() {
@@ -79,6 +90,14 @@ public class Player {
 
     public int getHeight() {
         return (int) hitBox.height;
+    }
+
+    public int getEnergy() {
+        return energy;
+    }
+
+    public void setEnergy(int energy) {
+        this.energy = energy;
     }
 
     public int getHealth() {
@@ -132,8 +151,14 @@ public class Player {
     }
 
     public void update(Map map, GameMain gameMain) {
+        // Handle player abilities
+        this.invulnerable = false;
+        if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
+            this.useBasicAbility();
+        }
         // inMovement is used to determine if running animation should be used for player
         inMovement = false;
+
 
         int tileIndexY, tileIndexX;
         if (Gdx.input.isKeyPressed(Input.Keys.W)) {
@@ -181,12 +206,22 @@ public class Player {
         }
 
         if (!isPlayerStillAlive()) {
+            playerLostSound.play(GameMain.getPreferences().getSoundEffectsVolume());
             gameMain.getScreenGame().executeGameOver();
         }
     }
 
     public void receiveDamage(int damageValue) {
-        this.health -= damageValue;
+        if (!this.invulnerable) {
+            this.health -= damageValue;
+        }
+    }
+
+    public void useBasicAbility() {
+        if (this.energy > 0) {
+            this.invulnerable = true;
+            this.energy--;
+        }
     }
 
     private float getAngleToMouse(OrthographicCamera camera) {

@@ -7,6 +7,8 @@ import big6ix.game.enemies.ManagerEnemies;
 import big6ix.game.screens.GameMain;
 import big6ix.game.utility.Pair;
 import big6ix.game.utility.Utilities;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 
 import java.io.Serializable;
 import java.util.List;
@@ -16,18 +18,27 @@ public class MapState implements Serializable {
     private static final int ENEMIES_PER_ROOM_MIN = 4;
     private static final int ENEMIES_PER_ROOM_MAX = 7;
     private static final int DISTANCE_FOR_DOOR_CLOSING = 2;
+    private static final String SOUND_CLOSING_DOORS_PATH = "sounds/closing_doors.wav";
+    private static final String SOUND_ROOM_FINISHED_PATH = "sounds/room_finished.wav";
 
     private boolean inFight;
     private MapData mapData;
     private Room currentOccupiedRoom;
     private int currentOccupiedRoomIndex;
     private boolean[] roomsCompletionStatuses;
+
+    // Sounds
+    private transient Sound closingDoorsSound;
+    private transient Sound roomFinishedSound;
+
     MapState(MapData mapData) {
         this.inFight = false;
         this.mapData = mapData;
         currentOccupiedRoom = null;
         currentOccupiedRoomIndex = 0;
         roomsCompletionStatuses = new boolean[mapData.getRooms().size()];
+
+        initializeSounds();
     }
 
     public Room getCurrentOccupiedRoom() {
@@ -38,17 +49,29 @@ public class MapState implements Serializable {
         return roomsCompletionStatuses;
     }
 
+    /**
+     * Sounds are assigned in separate method that can be used in constructor
+     * or after reading serialized MapState
+     */
+    public void initializeSounds() {
+        closingDoorsSound = Gdx.audio.newSound(Gdx.files.internal(SOUND_CLOSING_DOORS_PATH));
+        roomFinishedSound = Gdx.audio.newSound(Gdx.files.internal(SOUND_ROOM_FINISHED_PATH));
+    }
+
     public void update(ManagerEnemies managerEnemies, Player player, GameMain gameMain) {
         if (inFight) {
             if (checkIfAllEnemiesEliminated(managerEnemies)) {
                 roomsCompletionStatuses[currentOccupiedRoomIndex] = true;
                 openDoors();
+                roomFinishedSound.play(GameMain.getPreferences().getSoundEffectsVolume());
                 inFight = false;
             }
         } else {
             calculateAndChangeCurrentOccupiedRoom(player);
             if (currentOccupiedRoom != null && !roomsCompletionStatuses[currentOccupiedRoomIndex]) {
                 closeDoors();
+                closingDoorsSound.play(GameMain.getPreferences().getSoundEffectsVolume());
+
                 inFight = true;
                 int numberOfEnemies = Utilities.generateRandomInt(ENEMIES_PER_ROOM_MIN, ENEMIES_PER_ROOM_MAX);
                 int currentNumberOfEnemies = 0;

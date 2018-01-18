@@ -32,10 +32,26 @@ public class HUD {
         }
         // Green color
         gameMain.getFont().setColor(new Color(0, 0.902f, 0.251f, 1));
-        gameMain.getFont().draw(gameMain.batch, "Rooms completed: " + passedCount, 0, LIFE_ICON_HEIGHT + VERTICAL_OFFSET);
+        gameMain.getFont().draw(
+                gameMain.batch,
+                "Rooms completed: " + passedCount,
+                0, LIFE_ICON_HEIGHT + VERTICAL_OFFSET
+        );
 
         // Red color
         gameMain.getFont().setColor(Color.RED);
-        gameMain.getFont().draw(gameMain.batch, "Rooms left: " + (map.getRooms().size() - passedCount), 0, LIFE_ICON_HEIGHT + GameMain.FONT_SIZE + 2 * VERTICAL_OFFSET);
+        gameMain.getFont().draw(
+                gameMain.batch,
+                "Rooms left: " + (map.getRooms().size() - passedCount),
+                0, LIFE_ICON_HEIGHT + GameMain.FONT_SIZE + 2 * VERTICAL_OFFSET
+        );
+
+        // Player available energy
+        gameMain.getFont().setColor(Color.YELLOW);
+        gameMain.getFont().draw(
+                gameMain.batch,
+                "Energy : " + player.getEnergy(),
+                0, LIFE_ICON_HEIGHT + 2* GameMain.FONT_SIZE + 3 * VERTICAL_OFFSET
+        );
     }
 }

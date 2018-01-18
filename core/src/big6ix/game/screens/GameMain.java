@@ -78,8 +78,8 @@ public class GameMain extends Game {
         screenGame.initializeGame();
     }
 
-    public void initializeGame(Map map, Pair playerPosition, Integer playerHealth) {
-        screenGame.initializeGame(map, playerPosition, playerHealth);
+    public void initializeGame(Map map, Pair playerPosition, Integer playerHealth, Integer playerEnergy) {
+        screenGame.initializeGame(map, playerPosition, playerHealth, playerEnergy);
     }
 
     public void activateGameScreen() {

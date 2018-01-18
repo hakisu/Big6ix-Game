@@ -133,6 +133,7 @@ public class ScreenGame extends ScreenAdapter {
 
     private void handleInput() {
         if (!miniMapActive) {
+            // Player shooting bullets
             if (Gdx.input.justTouched()) {
                 shootingSound.play(GameMain.getPreferences().getSoundEffectsVolume());
                 Vector3 mousePositionInGameWorld = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
@@ -203,11 +204,12 @@ public class ScreenGame extends ScreenAdapter {
      * @param playerPosition position of the player on the map
      * @param playerHealth   health of the player
      */
-    public void initializeGame(Map map, Pair playerPosition, Integer playerHealth) {
+    public void initializeGame(Map map, Pair playerPosition, Integer playerHealth, Integer playerEnergy) {
         this.map = map;
-        this.map.initializePathFinder();
+        this.map.initializeMap();
         this.player = new Player(playerPosition.getIndexX(), playerPosition.getIndexY());
         this.player.setHealth(playerHealth);
+        this.player.setEnergy(playerEnergy);
         this.managerBullets = new ManagerBullets(this.player, this.map);
         this.managerEnemies = new ManagerEnemies(this.player, this.managerBullets, this.map);
         this.managerBullets.setManagerEnemies(managerEnemies);
@@ -242,7 +244,11 @@ public class ScreenGame extends ScreenAdapter {
         System.out.println("Game screen set to active.");
     }
 
-    // Main game loop for physics, input and graphics updates
+    /**
+     * Main game loop for physics, input and graphics updates.
+     *
+     * @param delta time between frames in seconds
+     */
     @Override
     public void render(float delta) {
         long newTime = System.nanoTime();
@@ -269,6 +275,7 @@ public class ScreenGame extends ScreenAdapter {
                 savedGame.put("map", this.map);
                 savedGame.put("playerPosition", new Pair((int) this.player.getX() / Map.TILE_WIDTH, (int) this.player.getY() / Map.TILE_HEIGHT));
                 savedGame.put("playerHealth", this.player.getHealth());
+                savedGame.put("playerEnergy", this.player.getEnergy());
                 out.writeObject(savedGame);
                 out.flush();
             } catch (IOException e) {

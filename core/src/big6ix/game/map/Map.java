@@ -71,8 +71,9 @@ public class Map implements IndexedGraph<Tile>, Serializable {
     /**
      * Needs to be used if map was created not using constructor. For example by serialization.
      */
-    public void initializePathFinder() {
+    public void initializeMap() {
         this.pathFinder = new IndexedAStarPathFinder<>(this);
+        this.mapState.initializeSounds();
     }
 
     public void render(SpriteBatch batch, OrthographicCamera camera) {

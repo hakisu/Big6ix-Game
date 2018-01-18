@@ -72,7 +72,8 @@ public class ScreenMainMenu extends ScreenAdapter {
                         Map loadedMap = (Map) savedGame.get("map");
                         Pair loadedPlayerPosition = (Pair) savedGame.get("playerPosition");
                         Integer loadedPlayerHealth = (Integer) savedGame.get("playerHealth");
-                        gameMain.initializeGame(loadedMap, loadedPlayerPosition, loadedPlayerHealth);
+                        Integer loadedPlayerEnergy = (Integer) savedGame.get("playerEnergy");
+                        gameMain.initializeGame(loadedMap, loadedPlayerPosition, loadedPlayerHealth, loadedPlayerEnergy);
                         saveLoaded = true;
                     } catch (IOException | ClassNotFoundException e) {
                         // If there is no save file do nothing

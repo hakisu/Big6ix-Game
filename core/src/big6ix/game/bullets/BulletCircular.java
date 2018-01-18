@@ -8,7 +8,7 @@ public final class BulletCircular extends Bullet {
     public static final int WIDTH = 16;
     public static final int HEIGHT = 16;
     private static final float INITIAL_RADIUS = 20;
-    private static final float RADIUS_INCREMENT_SPEED = 0.3f;
+    private static final float RADIUS_INCREMENT_SPEED = 0.35f;
     private static final float SPEED = 2.5f;
     private static final int DAMAGE_POWER = 1;
     private static final String ATLAS_NAME = "bullet_hostile";
